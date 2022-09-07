@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "crawlerstack_anticaptcha"
+version = "0.1.0"
+description = "anti captcha api service"
+authors = ["Terry <17601306065@163.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+click = "^8.1.3"
+
+[tool.poetry.dev-dependencies]
+isort = "^5.10.1"
+pylint = "^2.15.0"
+pytest = "^7.1.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+crawlerstack_anticaptcha = 'crawlerstack_anticaptcha.cmdline:main'
