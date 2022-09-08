@@ -1,0 +1,7 @@
+# The directory where the uploaded files are saved
+image_download_path: /tmp/anticaptcha/download/source-images
+image_trash_path: /tmp/anticaptcha/trash
+
+# log config
+log_path: /tmp/log
+log_level: INFO

@@ -22,6 +22,10 @@
 
 ## 接口调用
 
+- 向api发起post请求时，请求link末尾加上要破解的验证码类型
+
+  request url例如 `http://0.0.0.0:8080/upload/?item_id=1`
+
 ```bash
 requests.post(post,files={'file':open(file:Path,'rb')})
 ```
