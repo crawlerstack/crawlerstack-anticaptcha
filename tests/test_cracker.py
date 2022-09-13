@@ -1,5 +1,4 @@
 """Test cracker"""
-import os
 
 import pytest
 
@@ -27,10 +26,3 @@ def test_parse(mocker, length):
     if length == 1:
         image_captcha.canny_detection = mocker.MagicMock(return_value=length)
         assert image_captcha.parse() == 1
-
-
-def test_canny_detection():
-    """test_canny_detection"""
-    test_image_file = os.path.abspath('data/test.jpg')
-    image_captcha = SliderCaptchaServices(test_image_file)
-    assert image_captcha.canny_detection() == 106
