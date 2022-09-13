@@ -1,41 +1,44 @@
+# -*- coding:utf-8 -*-
 """Preprocessing"""
 import logging
+import os.path
 
-from skimage import io
 import cv2
-import numpy as np
 
 
 class ImagePreprocessing:
     """ImagePreprocessing"""
 
     def __init__(self, img_file: str):
-        self.img_file = img_file
+        self.img_file = os.path.abspath(img_file)
         self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
 
     @property
     def image(self):
-        """read_file"""
-        img = io.imread(self.img_file)
+        """
+        加载图片
+        read_file
+        :return:
+        """
+        img = cv2.imread(self.img_file, 0)
         return img
 
-    @property
-    def hsv(self):
-        """gray"""
-        hsv_img = cv2.cvtColor(self.image, cv2.COLOR_BGR2HSV)
-        h, s, v = cv2.split(hsv_img)  # pylint: disable=C0103,W0612
-        return v
+    def thresholding_white(self):
+        """
+        Thresholding White
+        :return:
+        """
+        _, _threshold = cv2.threshold(self.image, 210, 255, cv2.THRESH_BINARY)
+        return _threshold
 
-    def thresholding(self):
-        """Thresholding"""
-        _, thres = cv2.threshold(self.hsv, 190, 200, cv2.THRESH_BINARY_INV)
-        return thres
-
-    def morph_close(self):
-        """morph_close"""
-        _k = np.ones((3, 3), np.uint8)
-        thres = cv2.morphologyEx(self.thresholding(), cv2.MORPH_CLOSE, _k)  # 闭运算
-        return thres
+    def thresholding_black(self):
+        """
+        thresholding_black
+        :return:
+        """
+        _threshold = cv2.adaptiveThreshold(self.image, 255,
+                                           cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 15, 2)
+        return _threshold
 
     def show_img(self, image):
         """
