@@ -22,7 +22,7 @@ async def anticaptcha(
     :return:
     """
     data = await file.read()
-    res_handler = HandlerService(file, item_name, data)
+    res_handler = HandlerService(file, int(item_name), data)
     result_message = res_handler.check()
     if result_message.get('success') == 'false':
         raise HTTPException(status_code=415, detail=result_message)
