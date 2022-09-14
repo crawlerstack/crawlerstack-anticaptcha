@@ -28,7 +28,7 @@ class ImagePreprocessing:
         Thresholding White
         :return:
         """
-        _, _threshold = cv2.threshold(self.image, 210, 255, cv2.THRESH_BINARY)
+        _, _threshold = cv2.threshold(self.image, 200, 255, cv2.THRESH_BINARY)
         return _threshold
 
     def thresholding_black(self):
