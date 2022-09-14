@@ -35,7 +35,11 @@ class SliderCaptchaServices:
         return length == 0
 
     def check(self, edge):
-        """check"""
+        """
+        check
+        :param edge:
+        :return:
+        """
         length = 0
         counts, _ = cv2.findContours(edge, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         for count in counts:
