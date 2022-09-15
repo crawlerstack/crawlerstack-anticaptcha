@@ -1,7 +1,11 @@
 # The directory where the uploaded files are saved
-image_download_path: /tmp/anticaptcha/download/source-images
-image_trash_path: /tmp/anticaptcha/trash
+image_download_path: /tmp/anticaptcha/download
+
 
 # log config
 log_path: /tmp/log
 log_level: INFO
+
+# mongodb config
+mongodb_url: mongodb://127.0.0.1:27017
+mongodb_name: AntiCaptcha
