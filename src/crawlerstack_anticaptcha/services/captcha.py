@@ -6,8 +6,8 @@ from crawlerstack_anticaptcha.services.cracker import SliderCaptchaServices
 from crawlerstack_anticaptcha.utils.uploaded_file import UploadedFile
 
 
-class HandlerService:
-    """ResponseHandlerService"""
+class CaptchaService:
+    """SliderCaptchaHandlerService"""
 
     def __init__(self, file, item_name: int, file_data):
         self.file = file
@@ -15,7 +15,7 @@ class HandlerService:
         self.file_data = file_data
         self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
 
-    def check(self) -> dict[str, int | dict | str] | None:
+    def check(self) -> dict:
         """check"""
         file_type = self.file.content_type
         timestamp = time.strftime("%Y%m%d%H%M%S", time.localtime())
@@ -50,7 +50,12 @@ class HandlerService:
             )
             return result_message
 
-        return None
+        return {
+            'success': 'false',
+            'code': '',
+            'data': '',
+            'message': ''
+        }
 
     @staticmethod
     def message(success: str, code: int, data: dict, message_text: str):

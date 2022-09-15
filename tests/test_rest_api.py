@@ -3,7 +3,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from crawlerstack_anticaptcha.api.rest_api import app
-from crawlerstack_anticaptcha.services.handler import HandlerService
+from crawlerstack_anticaptcha.services.archive import ArchiveService
+from crawlerstack_anticaptcha.services.captcha import CaptchaService
 
 client = TestClient(app)
 
@@ -15,7 +16,7 @@ client = TestClient(app)
         'true'
     ]
 )
-def test_post(mocker, success):
+def test_post_anticaptcha(mocker, success):
     """
     test_post
     :param mocker:
@@ -23,11 +24,11 @@ def test_post(mocker, success):
     :return:
     """
     if success == 'true':
-        check = mocker.patch.object(HandlerService, 'check')
+        check = mocker.patch.object(CaptchaService, 'check')
         payload = {'item_name': '1'}
-        files = [('file', ('下载 (4).png', open(mocker.MagicMock(), 'rb'), 'image/png'))]  # pylint:disable=R1732
+        files = [('file', ('foo.png', open(mocker.MagicMock(), 'rb'), 'image/png'))]  # pylint:disable=R1732
         response = client.post(
-            '/crawlerstack/anticaptcha/',
+            '/crawlerstack/identify_captcha/',
             data=payload,
             files=files
         )
@@ -37,12 +38,26 @@ def test_post(mocker, success):
     if success == 'false':
         payload = {'item_name': '1'}
         files = [('file', ('test.json', open(mocker.MagicMock(), 'rb'), 'application/json'))]  # pylint:disable=R1732
-        res_handler = HandlerService(mocker.MagicMock(), 1, mocker.MagicMock())
+        res_handler = CaptchaService(mocker.MagicMock(), 1, mocker.MagicMock())
         res_handler.check = mocker.MagicMock(rtetutn_value={'success': 'false'})
 
         response = client.post(
-            '/crawlerstack/anticaptcha/',
+            '/crawlerstack/identify_captcha/',
             data=payload,
             files=files
         )
         assert response.status_code == 415
+
+
+def test_receive_parse_results(mocker):
+    """test receive parse results"""
+    written_to_db = mocker.patch.object(ArchiveService, 'written_to_db')
+    payload = {'item_name': '1', 'success': 'false'}
+    files = [('file', ('foo.png', open(mocker.MagicMock(), 'rb'), 'image/png'))]  # pylint:disable=R1732
+    response = client.post(
+        '/crawlerstack/record_results/',
+        data=payload,
+        files=files
+    )
+    assert response.status_code == 200
+    written_to_db.assert_called_with()
