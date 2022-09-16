@@ -36,8 +36,11 @@ class ImagePreprocessing:
         thresholding_black
         :return:
         """
-        _threshold = cv2.adaptiveThreshold(self.image, 255,
-                                           cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 15, 2)
+        _threshold = cv2.adaptiveThreshold(
+            self.image, 255,
+            cv2.ADAPTIVE_THRESH_MEAN_C,
+            cv2.THRESH_BINARY, 15, 2
+        )
         return _threshold
 
     def show_img(self, image):

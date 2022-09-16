@@ -1,5 +1,5 @@
 # The directory where the uploaded files are saved
-image_download_path: /tmp/anticaptcha/download
+image_save_path: /tmp/captcha
 
 
 # log config

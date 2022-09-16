@@ -23,7 +23,8 @@ class MongoRepository:
         :return:
         """
         collection = self.mongo_client.get_database(
-            self.db_name).get_collection(self.collection_name)
+            self.db_name
+        ).get_collection(self.collection_name)
         return collection
 
     def write(self, content: dict):

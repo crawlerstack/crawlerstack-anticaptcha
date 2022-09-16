@@ -56,7 +56,7 @@ class ArchiveService:
         :param data:
         :return:
         """
-        for file in os.listdir(Path(f'{settings.IMAGE_DOWNLOAD_PATH}/Archive')):
+        for file in os.listdir(Path(f'{settings.IMAGE_SAVE_PATH}/Archive')):
             if not os.path.isdir(file):
                 with open(file, 'rb') as obj:
                     if obj.read() == data:
