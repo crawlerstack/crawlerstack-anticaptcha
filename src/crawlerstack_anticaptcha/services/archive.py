@@ -49,7 +49,7 @@ class ArchiveService:
             upload_file = UploadedFile(self.file_data, 'Archive', file)
             image_file = upload_file.save()
             return image_file
-        return ''
+        return 'File already exists.'
 
     def check(self, data):
         """
@@ -68,5 +68,5 @@ class ArchiveService:
                     if obj.read() == data:
                         self.logger.info('File already exists.')
                         return False
-                    return True
+                    continue
         return True

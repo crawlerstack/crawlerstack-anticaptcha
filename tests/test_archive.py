@@ -66,7 +66,7 @@ def test_save_file(mocker, check):
         test_file = mocker.MagicMock(filename='foo.jpg')
         archive = ArchiveService(test_file, 'test', 'false', 1)
         result = archive.save_file()
-        assert result == ''
+        assert result == 'File already exists.'
 
 
 @pytest.mark.parametrize(
