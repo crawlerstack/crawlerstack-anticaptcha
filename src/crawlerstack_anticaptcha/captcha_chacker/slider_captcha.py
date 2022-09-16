@@ -7,8 +7,8 @@ from crawlerstack_anticaptcha.processing.preprocessing import \
     ImagePreprocessing
 
 
-class SliderCaptchaServices:
-    """SliderCaptchaServices"""
+class SliderCaptcha:
+    """SliderCaptchaChacker"""
 
     def __init__(self, image_file: str):
         self.preprocessing = ImagePreprocessing(image_file)

@@ -1,4 +1,8 @@
 """Test archive"""
+import logging
+import os
+from pathlib import Path
+
 import pytest
 
 from crawlerstack_anticaptcha.repositories.mongo_repository import \
@@ -63,3 +67,31 @@ def test_save_file(mocker, check):
         archive = ArchiveService(test_file, 'test', 'false', 1)
         result = archive.save_file()
         assert result == ''
+
+
+@pytest.mark.parametrize(
+    'archive',
+    [
+        True,
+        False
+    ]
+)
+def test_check(mock_path, caplog, archive):
+    """
+    test_check
+    :param mock_path:
+    :param caplog:
+    :param archive:
+    :return:
+    """
+    archive = ArchiveService('test', b'1', 'false', 1)
+    archive.image_save_path = mock_path
+    if archive:
+        assert archive.check(b'1')
+    if not archive:
+        os.makedirs(Path(f'{mock_path}/Archive'))
+        with open(Path(f'{mock_path}/Archive/test.png'), 'wb') as file:
+            file.write(b'2')
+        caplog.set_level(logging.INFO)
+        assert not archive.check(b'2')
+        assert 'already exists' in caplog.text

@@ -2,7 +2,8 @@
 import logging
 import time
 
-from crawlerstack_anticaptcha.services.cracker import SliderCaptchaServices
+from crawlerstack_anticaptcha.captcha_chacker.slider_captcha import \
+    SliderCaptcha
 from crawlerstack_anticaptcha.utils.uploaded_file import UploadedFile
 
 
@@ -36,7 +37,7 @@ class CaptchaService:
             upload_file = UploadedFile(self.file_data, 'Slider-Captcha',
                                        f'{timestamp}.{self.file.filename.split(".")[1]}')
             img_file = upload_file.save()
-            image_captcha = SliderCaptchaServices(str(img_file))
+            image_captcha = SliderCaptcha(str(img_file))
             parse_res = image_captcha.parse()
             result_message = self.message(
                 'true',

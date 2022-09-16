@@ -1,8 +1,9 @@
 """Test handler"""
 import pytest
 
+from crawlerstack_anticaptcha.captcha_chacker.slider_captcha import \
+    SliderCaptcha
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
-from crawlerstack_anticaptcha.services.cracker import SliderCaptchaServices
 from crawlerstack_anticaptcha.utils.uploaded_file import UploadedFile
 
 
@@ -33,7 +34,7 @@ def test_check(mocker, test_file, item_name):
 
     if test_file == 'image' and item_name == 1:
         save = mocker.patch.object(UploadedFile, 'save')
-        parse = mocker.patch.object(SliderCaptchaServices, 'parse')
+        parse = mocker.patch.object(SliderCaptcha, 'parse')
         test_file = mocker.MagicMock(content_type=test_file)
         file_data = mocker.MagicMock()
         handler = CaptchaService(test_file, item_name, file_data)

@@ -2,7 +2,8 @@
 
 import pytest
 
-from crawlerstack_anticaptcha.services.cracker import SliderCaptchaServices
+from crawlerstack_anticaptcha.captcha_chacker.slider_captcha import \
+    SliderCaptcha
 
 
 @pytest.mark.parametrize(
@@ -19,7 +20,7 @@ def test_parse(mocker, length):
     :param length:
     :return:
     """
-    image_captcha = SliderCaptchaServices('image_file')
+    image_captcha = SliderCaptcha('image_file')
     if length == 0:
         image_captcha.canny_detection = mocker.MagicMock(return_value=length)
         assert 'failed' in image_captcha.parse()

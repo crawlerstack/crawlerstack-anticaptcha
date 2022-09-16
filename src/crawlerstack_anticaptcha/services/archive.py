@@ -12,6 +12,7 @@ from crawlerstack_anticaptcha.utils.uploaded_file import UploadedFile
 
 class ArchiveService:
     """ArchiveService"""
+    image_save_path = settings.IMAGE_SAVE_PATH
 
     def __init__(self, file, file_data, success: str, item_name: int):
         self.file = file
@@ -56,11 +57,16 @@ class ArchiveService:
         :param data:
         :return:
         """
-        for file in os.listdir(Path(f'{settings.IMAGE_SAVE_PATH}/Archive')):
+        try:
+            files_list = os.listdir(Path(f'{self.image_save_path}/Archive'))
+        except FileNotFoundError:
+            os.makedirs(Path(f'{self.image_save_path}/Archive'))
+            files_list = os.listdir(Path(f'{self.image_save_path}/Archive'))
+        for file in files_list:
             if not os.path.isdir(file):
-                with open(file, 'rb') as obj:
+                with open(Path(f'{self.image_save_path}/Archive/{file}'), 'rb') as obj:
                     if obj.read() == data:
                         self.logger.info('File already exists.')
                         return False
                     return True
-            return False
+        return True
