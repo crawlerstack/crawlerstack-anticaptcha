@@ -28,3 +28,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 crawlerstack_anticaptcha = 'crawlerstack_anticaptcha.cmdline:main'
+
+[tool.pylint]
+disable=["E1101"]
