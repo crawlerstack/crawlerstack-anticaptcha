@@ -34,11 +34,13 @@ class ArchiveService:
             'captcha_type': captcha_type
         }
 
-    def written_to_db(self):
+    def written_to_db(self) -> dict:
         """archive file info"""
         mongo = MongoRepository('ParseResults')
         info = self.received_info()
-        mongo.write(info)
+        if info.get('file') != 'File already exists.':
+            mongo.write(info)
+        return info
 
     def save_file(self):
         """ save file"""
@@ -65,8 +67,9 @@ class ArchiveService:
         for file in files_list:
             if not os.path.isdir(file):
                 with open(Path(f'{self.image_save_path}/Archive/{file}'), 'rb') as obj:
-                    if obj.read() == data:
-                        self.logger.info('File already exists.')
-                        return False
-                    continue
+                    obj_data = obj.read()
+                if obj_data == data:
+                    self.logger.info('File already exists.')
+                    return False
+                continue
         return True

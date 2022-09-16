@@ -51,8 +51,7 @@ def test_post_anticaptcha(mocker, success):
 
 def test_receive_parse_results(mocker):
     """test receive parse results"""
-    written_to_db = mocker.patch.object(ArchiveService, 'written_to_db')
-    mocker.patch.object(ArchiveService, 'received_info', return_value={'foo': 'bar'})
+    mocker.patch.object(ArchiveService, 'written_to_db', return_value={'foo': 'bar'})
     payload = {'item_name': '1', 'success': 'false'}
     files = [('file', ('foo.png', open(mocker.MagicMock(), 'rb'), 'image/png'))]  # pylint:disable=R1732
     response = client.post(
@@ -62,4 +61,3 @@ def test_receive_parse_results(mocker):
     )
     assert response.status_code == 200
     assert response.json() == {'foo': 'bar'}
-    written_to_db.assert_called_with()

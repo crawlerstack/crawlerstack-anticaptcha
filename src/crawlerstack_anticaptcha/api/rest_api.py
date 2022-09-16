@@ -45,8 +45,9 @@ async def receive_parse_results(
     """
     data = await file.read()
     archive = ArchiveService(file, data, success, item_name)
-    archive.written_to_db()
-    return archive.received_info()
+    received_info = archive.written_to_db()
+    message = {key: val for key, val in received_info.items() if key != '_id'}
+    return message
 
 
 def start(host: str, port: int):
