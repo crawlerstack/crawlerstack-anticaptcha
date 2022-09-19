@@ -1,9 +1,10 @@
 """Test api"""
+import json
+
 import pytest
 from fastapi.testclient import TestClient
 
 from crawlerstack_anticaptcha.api.rest_api import app
-from crawlerstack_anticaptcha.services.archive import ArchiveService
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
 
 client = TestClient(app)
@@ -28,7 +29,7 @@ def test_post_anticaptcha(mocker, success):
         payload = {'item_name': '1'}
         files = [('file', ('foo.png', open(mocker.MagicMock(), 'rb'), 'image/png'))]  # pylint:disable=R1732
         response = client.post(
-            '/crawlerstack/identify_captcha/',
+            '/crawlerstack/captcha/identify/',
             data=payload,
             files=files
         )
@@ -42,22 +43,25 @@ def test_post_anticaptcha(mocker, success):
         res_handler.check = mocker.MagicMock(rtetutn_value={'success': 'false'})
 
         response = client.post(
-            '/crawlerstack/identify_captcha/',
+            '/crawlerstack/captcha/identify/',
             data=payload,
             files=files
         )
         assert response.status_code == 415
 
 
-def test_receive_parse_results(mocker):
+def test_receive_parse_results():
     """test receive parse results"""
-    mocker.patch.object(ArchiveService, 'written_to_db', return_value={'foo': 'bar'})
-    payload = {'item_name': '1', 'success': 'false'}
-    files = [('file', ('foo.png', open(mocker.MagicMock(), 'rb'), 'image/png'))]  # pylint:disable=R1732
-    response = client.post(
-        '/crawlerstack/record_results/',
-        data=payload,
-        files=files
+    payload = json.dumps({
+        "item_name": 1,
+        "success": "test"
+    })
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    response = client.put(
+        '/crawlerstack/captcha/record/123',
+        headers=headers,
+        data=payload
     )
     assert response.status_code == 200
-    assert response.json() == {'foo': 'bar'}
