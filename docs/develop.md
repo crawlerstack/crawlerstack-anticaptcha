@@ -22,18 +22,60 @@
 
 ## 接口调用
 
+poet 请求
+
+```base
+url = "***/crawlerstack/captcha/identify/"
+
+payload={'category': 'SliderCaptcha'}
+files=[
+  ('file',('foo.jpg',open('image path','rb'),'image/jpeg'))
+]
+
+response = requests.post(url, data=payload, files=files)
+```
+
+put 请求
+
+```base
+url = "***/crawlerstack/captcha/record/[file-uuid]"
+
+payload = json.dumps({
+  "category": "SliderCaptcha",
+  "success": True
+})
+headers = {
+  'Content-Type': 'application/json'
+}
+
+response = requests.put(url, headers=headers, data=payload)
+
+```
+
 ### 接口返回值
+
+post 返回值
 
 ```json
 {
-    "success": "true",
-    "code": 200,
-    "data": {
-        "parse_results": 611,
-        "media_type": "image/jpeg",
-        "captcha_type": "SliderCaptcha",
-        "captcha_code": 1
-    },
-    "message": "File parsing succeeded."
+  "code": 200,
+  "data": {
+    "file_id": "bd107b6d-3987-11ed-a9cc-50ebf6777188",
+    "value": 106,
+    "category": "SliderCaptcha"
+  },
+  "message": "File parsing succeeded"
+}
+```
+
+put 返回值
+
+```json
+{
+  "file_id": "bd107b6d-3987-11ed-a9cc-50ebf6777188",
+  "item": {
+    "category": "SliderCaptcha",
+    "success": true
+  }
 }
 ```

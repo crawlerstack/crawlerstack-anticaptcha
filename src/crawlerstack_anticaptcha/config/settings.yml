@@ -6,9 +6,5 @@ image_save_path: /tmp/captcha
 log_path: /tmp/log
 log_level: INFO
 
-# mongodb config
-mongodb_url: mongodb://127.0.0.1:27017
-mongodb_name: AntiCaptcha
-
 # sql database config.
-database_url: mysql+aiomysql://root:123qweasd@localhost:3306/anticaptcha
+database_url: mysql+aiomysql://root:root@localhost:3306/anticaptcha

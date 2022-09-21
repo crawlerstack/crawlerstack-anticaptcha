@@ -1,77 +1,98 @@
 """response handler"""
+import datetime
 import logging
 import uuid
 
-from pydantic import BaseModel
+from sqlalchemy.exc import IntegrityError
 
 from crawlerstack_anticaptcha.captcha_chacker.slider_captcha import \
     SliderCaptcha
+from crawlerstack_anticaptcha.repositories.respositories import (
+    CaptchaRepository, CategoryRepository)
+from crawlerstack_anticaptcha.utils.schema import Message, MessageData
 from crawlerstack_anticaptcha.utils.uploaded_file import UploadedFile
-
-
-class Message(BaseModel):  # pylint:disable=R0903
-    """Message"""
-    file_id: uuid.UUID
-    success: str
-    code: int
-    data: dict
-    message_text: str
 
 
 class CaptchaService:  # pylint:disable=R0903
     """SliderCaptchaHandlerService"""
 
-    def __init__(self, file, item_name: int, file_data):
+    def __init__(self, file, category_name: str, file_data):
         self.file = file
-        self.item_name = item_name
+        self.category_name = category_name
         self.file_data = file_data
         self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
 
-    def check(self) -> Message:
+    async def check(self) -> Message:
         """check"""
         file_type = self.file.content_type
-        filename_uuid = uuid.uuid3(uuid.NAMESPACE_DNS, self.file.filename.split('.')[0])
+        file_uuid = str(uuid.uuid1())
         if 'image' not in file_type:
             result_message = Message(
-                file_id=filename_uuid,
-                success='false',
                 code=415,
-                data={
-                    'parse_results': '',
-                    'media_type': file_type,
-                    'captcha_type': '',
-                    'captcha_code': ''
-                },
-                message_text='The upload file format is incorrect,'
-                             'please upload the correct image type'
+                data=None,
+                message='The upload file format is incorrect,'
+                        'please upload the correct image type'
             )
-
             return result_message
 
-        if 'image' in file_type and self.item_name == 1:
+        if 'image' in file_type and self.category_name == 'SliderCaptcha':
             upload_file = UploadedFile(self.file_data, 'Slider-Captcha',
-                                       f'{filename_uuid}.{self.file.filename.split(".")[1]}')
+                                       f'{file_uuid}.{self.file.filename.split(".")[1]}')
             img_file = upload_file.save()
             image_captcha = SliderCaptcha(str(img_file))
             parse_res = image_captcha.parse()
             result_message = Message(
-                file_id=filename_uuid,
-                success='true',
                 code=200,
-                data={
-                    'parse_results': parse_res,
-                    'media_type': file_type,
-                    'captcha_type': 'SliderCaptcha',
-                    'captcha_code': 1
-                },
-                message_text='File parsing succeeded'
+                data=MessageData(value=parse_res, category=self.category_name, file_id=file_uuid),
+                message='File parsing succeeded'
+            )
+            await self.written_to_db(
+                file_id=file_uuid,
+                category_id=1,
+                file_path=str(img_file),
+                file_type=file_type,
+                creation_time=datetime.datetime.today(),
+                success=None
             )
             return result_message
 
-        return Message(
-            file_id=filename_uuid,
-            success='false',
-            code=0,
-            data={},
-            message_text=''
-        )
+        if 'image' in file_type and self.category_name == 'RotatedCaptcha':
+            upload_file = UploadedFile(self.file_data, 'Rotated-Captcha',
+                                       f'{file_uuid}.{self.file.filename.split(".")[1]}')
+            img_file = upload_file.save()
+            image_captcha = SliderCaptcha(str(img_file))
+            parse_res = image_captcha.parse()
+            result_message = Message(
+                code=200,
+                data=MessageData(value=parse_res, category=self.category_name, file_id=file_uuid),
+                message='File parsing succeeded'
+            )
+            await self.written_to_db(
+                file_id=file_uuid,
+                category_id=2,
+                file_path=str(img_file),
+                file_type=file_type,
+                creation_time=datetime.datetime.today(),
+                success=None
+            )
+            return result_message
+
+        return Message(code=0, data=None, message='')
+
+    async def written_to_db(self, /, **kwargs):
+        """
+        written_to_db
+        :return:
+        """
+        captcha_repository = CaptchaRepository()
+        try:
+            await captcha_repository.create(**kwargs)
+        except IntegrityError:
+            await self.init_category()
+            await captcha_repository.create(**kwargs)
+
+    @staticmethod
+    async def init_category():
+        """init category"""
+        category_resp = CategoryRepository()
+        await category_resp.add_all()
