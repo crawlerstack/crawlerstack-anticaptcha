@@ -2,7 +2,6 @@
 import logging
 
 from sqlalchemy import delete
-from sqlalchemy.engine import Result
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.future import select
@@ -58,7 +57,14 @@ class BaseRepository:
                 await session.commit()
                 self.logger.info('Inserted %s', obj)
 
-    async def get_by_id(self, pk):  # pylint:disable=C0103
+    async def query_all(self):
+        """query_all"""
+        self.logger.info('query all')
+        async with async_session as session:
+            result = await session.execute(select(self.model))
+            return result.scalars().all()
+
+    async def get_by_id(self, pk: int):  # pylint:disable=invalid-name
         """
         get by id
         :param pk:
@@ -66,7 +72,15 @@ class BaseRepository:
         """
         stmt = select(self.model).where(self.model.id == pk)
         async with async_session as session:
-            return await session.scalar(stmt)
+            result = await session.scalar(stmt)
+            return result
+
+    async def delete_delete_by_file_id(self, file_id):
+        """delete one"""
+        stmt = delete(self.model).where(self.model.file_id == file_id)
+        async with async_session as session:
+            await session.execute(stmt)
+            await session.commit()
 
 
 class CategoryRepository(BaseRepository):
@@ -79,6 +93,7 @@ class CategoryRepository(BaseRepository):
 
     async def add_all(self):
         """add all"""
+        await self.drop_all()
         await self.create_all()
         async with async_session as session:
             session.add_all(
@@ -98,33 +113,18 @@ class CaptchaRepository(BaseRepository):
         """model"""
         return CaptchaModel
 
-    async def query_all(self):
-        """query_all"""
-        self.logger.info('query all')
-        async with async_session as session:
-            result: Result = await session.execute(select(self.model))
-            return result.scalars().all()
-
     async def get_by_file_id(self, file_id: str) -> CaptchaModel:
         """get_by_id"""
         self.logger.info('Get %s from Captcha', file_id)
-        stmt = select(CaptchaModel).where(CaptchaModel.file_id == file_id)
+        stmt = select(self.model).where(self.model.file_id == file_id)
         async with async_session as session:
             result = await session.scalar(stmt)
             return result
 
-    @staticmethod
-    async def delete_one(key):
-        """delete one"""
-        stmt = delete(CaptchaModel).where(CaptchaModel.file_id == key)
-        async with async_session as session:
-            await session.execute(stmt)
-            await session.commit()
-
-    async def update(self, file_id: str, success: bool):
+    async def update_by_file_id(self, file_id: str, success: bool):
         """update"""
         self.logger.info('Update file=%s success=%s', file_id, success)
-        stmt = select(CaptchaModel).where(CaptchaModel.file_id == file_id)
+        stmt = select(self.model).where(self.model.file_id == file_id)
         async with async_session as session:
             obj = await session.scalar(stmt)
             obj.success = success

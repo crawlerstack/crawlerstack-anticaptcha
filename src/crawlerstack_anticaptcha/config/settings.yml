@@ -7,4 +7,4 @@ log_path: /tmp/log
 log_level: INFO
 
 # sql database config.
-database_url: mysql+aiomysql://root:root@localhost:3306/anticaptcha
+database_url: sqlite+aiosqlite:////tmp/captcha_database.db

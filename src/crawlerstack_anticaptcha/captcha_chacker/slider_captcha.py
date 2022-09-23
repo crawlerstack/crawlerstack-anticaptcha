@@ -1,5 +1,6 @@
 """Cracker"""
 import logging
+from pathlib import Path
 
 import cv2
 
@@ -11,7 +12,7 @@ class SliderCaptcha:
     """SliderCaptchaChacker"""
 
     def __init__(self, image_file: str):
-        self.preprocessing = ImagePreprocessing(image_file)
+        self.preprocessing = ImagePreprocessing(Path(image_file))
         self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
 
     def parse(self):

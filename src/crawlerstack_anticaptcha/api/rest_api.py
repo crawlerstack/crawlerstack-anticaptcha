@@ -7,47 +7,37 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from crawlerstack_anticaptcha.repositories.respositories import \
     CaptchaRepository
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
+from crawlerstack_anticaptcha.utils.factory import CaptchaFactory
 from crawlerstack_anticaptcha.utils.schema import RecordItem
 
 logger = logging.getLogger(f'{__name__}  {__name__}')
 app = FastAPI()
 
 
-@app.post(
-    '/crawlerstack/captcha/identify/',
-    summary='Captcha identify the interface'
-)
+@app.post('/crawlerstack/captcha/identify/')
 async def anticaptcha(
         category: str = Form(),
         file: UploadFile = File()
 ):
     """
-    anticaptcha
-    :param file:
-    :param category:
-    :return:
+    Captcha identify the interface
     """
     data = await file.read()
-    captcha_service = CaptchaService(file, category, data)
+    factory = CaptchaFactory(category)
+    captcha_service = CaptchaService(file, factory.create_captcha(), data)
     result_message = await captcha_service.check()
     if result_message.code != 200:
         raise HTTPException(status_code=415, detail=result_message)
     return result_message
 
 
-@app.put(
-    '/crawlerstack/captcha/record/{file_id}',
-    summary='The interface that counts whether the captcha is parsed successfully'
-)
+@app.put('/crawlerstack/captcha/record/{file_id}')
 async def record(file_id: str, item: RecordItem):
     """
-    receive
-    :param file_id:
-    :param item:
-    :return:
+    The interface that counts whether the captcha is parsed successfully
     """
     captcha_repository = CaptchaRepository()
-    await captcha_repository.update(file_id, item.success)
+    await captcha_repository.update_by_file_id(file_id, item.success)
     return {'file_id': file_id, 'item': item}
 
 

@@ -12,7 +12,7 @@ client = TestClient(app)
 
 def test_receive_parse_results(mocker):
     """test receive parse results"""
-    update = mocker.patch.object(CaptchaRepository, 'update')
+    update = mocker.patch.object(CaptchaRepository, 'update_by_file_id')
     payload = json.dumps({
         "category": 'foo',
         "success": False
