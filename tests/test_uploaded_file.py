@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from crawlerstack_anticaptcha.repositories.models import CategoryModel
+from crawlerstack_anticaptcha.models import CategoryModel
 from crawlerstack_anticaptcha.utils.upload_file import UploadedFile
 
 

@@ -15,10 +15,10 @@ app = FastAPI()
 
 
 @app.exception_handler(ObjectDoesNotExist)
-async def exception_handler(request: Request, exc: ObjectDoesNotExist):  # pylint:disable=unused-argument
+async def exception_handler(_: Request, exc: ObjectDoesNotExist):
     """
     exception_handler
-    :param request:
+    :param _:
     :param exc:
     :return:
     """

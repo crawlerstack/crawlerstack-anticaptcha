@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 from crawlerstack_anticaptcha.config import settings
-from crawlerstack_anticaptcha.repositories.models import CategoryModel
+from crawlerstack_anticaptcha.models import CategoryModel
 
 
 class UploadedFile:

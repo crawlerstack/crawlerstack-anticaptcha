@@ -38,9 +38,12 @@ crawlerstack_anticaptcha = 'crawlerstack_anticaptcha.cmdline:main'
 
 [tool.pylint.main]
 ignored-modules = ["cv2", "alembic.context", "alembic.op"]
-disable = ["too-few-public-methods"]
+disable = ["too-few-public-methods", "unused-argument"]
 good-names = [
     "pk"
 ]
 max-line-length = 110
 ignore = "versions"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

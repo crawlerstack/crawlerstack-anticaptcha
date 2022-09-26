@@ -5,7 +5,7 @@ from fastapi import File
 
 from crawlerstack_anticaptcha.captcha_chacker.slider_captcha import \
     SliderCaptcha
-from crawlerstack_anticaptcha.repositories.models import CategoryModel
+from crawlerstack_anticaptcha.models import CategoryModel
 from crawlerstack_anticaptcha.repositories.respositories import (
     CaptchaRepository, CategoryRepository)
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
@@ -84,11 +84,8 @@ async def test_written_to_db(mocker):
     ]
 )
 @pytest.mark.asyncio
-async def test_check_category(category, mocker):
+async def test_check_category(init_category, category, mocker):
     """test check category"""
-    category_repository = CategoryRepository()
-    await category_repository.drop_all()
-    await category_repository.add_all()
     if category == 'SliderCaptcha':
         captcha = CaptchaService('test', category, mocker.MagicMock())
         result = await captcha.check_category()

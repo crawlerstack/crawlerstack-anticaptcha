@@ -2,12 +2,11 @@
 from datetime import datetime
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import declarative_base
 
-Base = declarative_base()
+from crawlerstack_anticaptcha.db import BaseModel
 
 
-class CategoryModel(Base):
+class CategoryModel(BaseModel):
     """CategoryModel"""
     __tablename__ = 'category'
     id = Column(Integer, primary_key=True)
@@ -15,10 +14,10 @@ class CategoryModel(Base):
     path = Column(String(255))
 
     def __repr__(self):
-        return f'<Category(category_id="{self.id}",category_type="{self.type}")>'
+        return f'<Category(category_id="{self.id}",category_type="{self.name}",path="{self.path}")>'
 
 
-class CaptchaModel(Base):
+class CaptchaModel(BaseModel):
     """CaptchaModel"""
     __tablename__ = 'captcha'
     id = Column(Integer, primary_key=True)

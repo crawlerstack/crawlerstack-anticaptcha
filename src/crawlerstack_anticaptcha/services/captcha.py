@@ -7,7 +7,7 @@ from fastapi import File
 
 from crawlerstack_anticaptcha.captcha_chacker.slider_captcha import \
     SliderCaptcha
-from crawlerstack_anticaptcha.repositories.models import CategoryModel
+from crawlerstack_anticaptcha.models import CategoryModel
 from crawlerstack_anticaptcha.repositories.respositories import (
     CaptchaRepository, CategoryRepository)
 from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist

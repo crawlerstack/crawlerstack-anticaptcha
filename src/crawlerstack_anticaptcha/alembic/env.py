@@ -9,7 +9,7 @@ from sqlalchemy import engine_from_config, pool
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from crawlerstack_anticaptcha.config import settings
-from crawlerstack_anticaptcha.repositories.models import Base
+from crawlerstack_anticaptcha.db import BaseModel
 
 config = context.config
 
@@ -22,7 +22,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = Base.metadata
+target_metadata = BaseModel.metadata
 
 
 # other values from the config, defined by the needs of env.py,
