@@ -1,9 +1,9 @@
 # The directory where the uploaded files are saved
-image_save_path: /tmp/captcha
+image_save_path: /tmp/captcha-service
 
 
 # log config
-log_path: /tmp/log
+log_path: /tmp/captcha-service/log
 log_level: INFO
 
 # sql database config.

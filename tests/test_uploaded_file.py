@@ -1,10 +1,10 @@
 """Test uploaded file"""
 import logging
-from enum import EnumMeta
 from pathlib import Path
 
 import pytest
 
+from crawlerstack_anticaptcha.repositories.models import CategoryModel
 from crawlerstack_anticaptcha.utils.upload_file import UploadedFile
 
 
@@ -26,7 +26,7 @@ def test_save(mocker, mock_path):
     :param mock_path:
     :return:
     """
-    upload_file = UploadedFile(b'foo', 'foo', 'bar.txt')
+    upload_file = UploadedFile(b'foo', mocker.MagicMock(), 'bar.txt')
     upload_file.image_save_path = mock_path
     write_to_file = mocker.patch.object(UploadedFile, 'write_to_file')
     upload_file.save()
@@ -36,19 +36,19 @@ def test_save(mocker, mock_path):
 def test_write_to_file(mocker, mock_path, caplog):
     """
     test_write_to_file
+    :param mocker:
     :param mock_path:
     :param caplog:
     :return:
     """
     caplog.set_level(logging.INFO)
-    value = mocker.MagicMock(value=mock_path)
     test_category = mocker.MagicMock(
-        SAVE_PATH=value,
-        return_value=EnumMeta
+        path=mock_path,
+        return_value=CategoryModel
     )
     upload_file = UploadedFile(b'1', test_category, 'test.dat')
     result = upload_file.write_to_file()
-    with open(mock_path / 'test.dat', 'rb') as obj:
+    with open(Path(result), 'rb') as obj:
         assert obj.read() == b'1'
     assert 'Save Complete' in caplog.text
     assert 'test.dat' in str(result)

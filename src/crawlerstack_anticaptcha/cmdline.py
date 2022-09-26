@@ -30,4 +30,4 @@ def api(host, port):
 
 
 if __name__ == '__main__':
-    main()  # pylint:disable=E1120
+    main()  # pylint:disable=no-value-for-parameter

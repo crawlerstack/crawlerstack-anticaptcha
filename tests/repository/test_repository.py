@@ -10,8 +10,10 @@ category_repository = CategoryRepository()
 captcha_repository = CaptchaRepository()
 
 
-async def init_db():
-    """init db"""
+@pytest.mark.asyncio
+async def test_get_by_name():
+    """test_table_exists"""
+    await category_repository.get_by_name('SliderCaptcha')
 
 
 @pytest.mark.asyncio
@@ -20,7 +22,7 @@ async def test_get_by_id():
     await category_repository.drop_all()
     await category_repository.add_all()
     result = await category_repository.get_by_id(1)
-    assert result.type == 'SliderCaptcha'
+    assert result.name == 'SliderCaptcha'
 
 
 @pytest.mark.asyncio
@@ -30,14 +32,11 @@ async def test_create():
     await category_repository.add_all()
     await captcha_repository.create(
         file_id='test',
-        category_id=1,
-        file_path='foo',
-        file_type='foo',
         creation_time=datetime.datetime.today(),
         success=None
     )
     result = await captcha_repository.get_by_file_id('test')
-    assert result.file_type == 'foo'
+    assert result.success is None
 
 
 @pytest.mark.asyncio
@@ -77,6 +76,6 @@ async def test_delete_by_file_id():
         file_id='test',
         creation_time=datetime.datetime.today(),
     )
-    await captcha_repository.delete_delete_by_file_id('test')
+    await captcha_repository.delete_by_file_id('test')
     result = await captcha_repository.get_by_file_id('test')
     assert result is None

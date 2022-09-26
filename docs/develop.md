@@ -79,3 +79,17 @@ put 返回值
   }
 }
 ```
+
+### 数据库表结构
+
+- category
+
+| id  |     name      | path |
+|:---:|:-------------:|:----:|
+|  1  | SliderCaptcha | Path |
+
+- captcha
+
+| id  | file_id | category | file_type | creation_time | success |
+|:---:|:-------:|:--------:|:---------:|:-------------:|:-------:|
+|  1  |  uuid   |    1     |    jpg    |    2022...    |  NULL   |  

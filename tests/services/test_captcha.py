@@ -1,22 +1,23 @@
-"""Test handler"""
+"""Test"""
 
 import pytest
+from fastapi import File
 
 from crawlerstack_anticaptcha.captcha_chacker.slider_captcha import \
     SliderCaptcha
+from crawlerstack_anticaptcha.repositories.models import CategoryModel
 from crawlerstack_anticaptcha.repositories.respositories import (
     CaptchaRepository, CategoryRepository)
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
-from crawlerstack_anticaptcha.utils import SliderCategory
+from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
 from crawlerstack_anticaptcha.utils.upload_file import UploadedFile
 
 
 @pytest.mark.parametrize(
     'file_type',
     [
-        'image',
+        'image/foo',
         'test',
-        'error'
     ]
 )
 @pytest.mark.asyncio
@@ -31,39 +32,39 @@ async def test_check(mocker, file_type):
         parse = mocker.patch.object(SliderCaptcha, 'parse')
         save = mocker.patch.object(UploadedFile, 'save')
         write_to_db = mocker.patch.object(CaptchaService, 'write_to_db')
+        mocker.patch.object(
+            CategoryRepository,
+            'get_by_name',
+            return_value=CategoryModel(name='SliderCategory', path='test', id=1
+                                       )
+        )
         test_file = mocker.MagicMock(
             content_type=file_type,
-            file_name='foo.jpg'
+            file_name='foo.jpg',
+            return_value=File
         )
         data = mocker.MagicMock()
-        captcha_service = CaptchaService(test_file, SliderCategory, data)
+        captcha_service = CaptchaService(test_file, 'SliderCategory', data)
         result = await captcha_service.check()
         save.assert_called()
         parse.assert_called()
         write_to_db.assert_called()
         assert result.code == 200
     if 'test' in file_type:
-        category_repository = CategoryRepository()
-        category_repository.get_by_id = mocker.MagicMock(return_value='SliderCaptcha')
+        mocker.patch.object(
+            CategoryRepository,
+            'get_by_name',
+            return_value=CategoryModel(
+                name='SliderCategory', path='test', id=1)
+        )
         test_file = mocker.MagicMock(
             content_type=file_type,
             file_name='foo.jpg'
         )
         data = mocker.MagicMock()
-        captcha_service = CaptchaService(test_file, mocker.MagicMock(), data)
+        captcha_service = CaptchaService(test_file, 'test', data)
         result = await captcha_service.check()
         assert result.code == 415
-    if 'error' in file_type:
-        category_repository = CategoryRepository()
-        category_repository.get_by_id = mocker.MagicMock(return_value='SliderCaptcha')
-        test_file = mocker.MagicMock(
-            content_type='image',
-            file_name='foo.jpg'
-        )
-        data = mocker.MagicMock()
-        captcha_service = CaptchaService(test_file, mocker.MagicMock(), data)
-        result = await captcha_service.check()
-        assert result.message == 'ModuleNotFoundError'
 
 
 @pytest.mark.asyncio
@@ -73,3 +74,26 @@ async def test_written_to_db(mocker):
     captcha_service = CaptchaService('test', 'foo', mocker.MagicMock())
     await captcha_service.write_to_db()
     create.assert_called_with()
+
+
+@pytest.mark.parametrize(
+    'category',
+    [
+        'test',
+        'SliderCaptcha'
+    ]
+)
+@pytest.mark.asyncio
+async def test_check_category(category, mocker):
+    """test check category"""
+    category_repository = CategoryRepository()
+    await category_repository.drop_all()
+    await category_repository.add_all()
+    if category == 'SliderCaptcha':
+        captcha = CaptchaService('test', category, mocker.MagicMock())
+        result = await captcha.check_category()
+        assert result.id == 1
+    else:
+        captcha = CaptchaService(mocker.MagicMock(), category, mocker.MagicMock())
+        with pytest.raises(ObjectDoesNotExist):
+            await captcha.check_category()
