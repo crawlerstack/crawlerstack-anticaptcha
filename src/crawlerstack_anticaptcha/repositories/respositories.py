@@ -6,8 +6,7 @@ from sqlalchemy.future import select
 
 from crawlerstack_anticaptcha.db import async_session
 from crawlerstack_anticaptcha.models import CaptchaModel, CategoryModel
-from crawlerstack_anticaptcha.utils.exception import (ObjectDoesNotExist,
-                                                      ObjectIndexError)
+from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
 
 
 class BaseRepository:
@@ -70,7 +69,8 @@ class CategoryRepository(BaseRepository):
         async with async_session() as session:
             result = await session.scalar(stmt)
             if result is None:
-                self.logger.info('Object Does Not Exist')
+                self.logger.error('Object Does Not Exist')
+                raise ObjectDoesNotExist('No captcha type found, Please upload correctly')
             self.logger.info('Get %s from Captcha', name)
             return result
 
@@ -101,15 +101,11 @@ class CaptchaRepository(BaseRepository):
         stmt = select(self.model).where(self.model.file_id == file_id)
         async with async_session() as session:
             async with session.begin():
-                obj = await session.scalars(stmt)
-                result = obj.all()
-                if not result:
+                obj = await session.scalar(stmt)
+                if obj is None:
                     raise ObjectDoesNotExist('File Id Does Not Exist')
-                if len(result) > 1:
-                    raise ObjectIndexError()
-                for i in result:
-                    i.success = success
-                    self.logger.info('Update file=%s success=%s', file_id, success)
+                obj.success = success
+                self.logger.info('Update file=%s success=%s', file_id, success)
 
     async def delete_by_file_id(self, file_id):
         """

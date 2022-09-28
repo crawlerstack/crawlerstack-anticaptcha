@@ -65,3 +65,12 @@ async def test_delete_by_file_id(init_captcha):
     await captcha_repository.delete_by_file_id('foo')
     result = await captcha_repository.get_by_file_id('foo')
     assert not result
+
+
+@pytest.mark.asyncio
+async def test_update_by_file_id(init_captcha):
+    """test_update_by_file_id"""
+    await captcha_repository.update_by_file_id('foo', True)
+    res = await captcha_repository.get_by_file_id('foo')
+    for i in res:
+        assert i.success

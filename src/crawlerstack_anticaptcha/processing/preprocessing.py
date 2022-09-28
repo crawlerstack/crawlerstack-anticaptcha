@@ -10,7 +10,7 @@ class ImagePreprocessing:
     """ImagePreprocessing"""
 
     def __init__(self, img_file: Path):
-        self.img_file = img_file.resolve()
+        self.img_file = str(img_file.resolve())
         self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
 
     @property
@@ -20,7 +20,7 @@ class ImagePreprocessing:
         read_file
         :return:
         """
-        img = cv2.imread(str(self.img_file), 0)
+        img = cv2.imread(self.img_file, 0)
         return img
 
     def thresholding_white(self):

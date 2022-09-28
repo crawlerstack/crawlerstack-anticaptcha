@@ -18,7 +18,7 @@ from crawlerstack_anticaptcha.utils.upload_file import UploadedFile
     'file_type',
     [
         'image/foo',
-        'test',
+        # 'test',
     ]
 )
 @pytest.mark.asyncio
@@ -31,13 +31,12 @@ async def test_check(mocker, file_type):
     )
     if 'image' in file_type:
         parse = mocker.patch.object(SliderCaptcha, 'parse')
-        save = mocker.patch.object(UploadedFile, 'save')
+        save = mocker.patch.object(UploadedFile, 'save', return_value=mocker.MagicMock())
         write_to_db = mocker.patch.object(CaptchaService, 'write_to_db')
         mocker.patch.object(
             CategoryRepository,
             'get_by_name',
-            return_value=CategoryModel(name='SliderCategory', path='test', id=1
-                                       )
+            return_value=CategoryModel(name='SliderCategory', path='test', id=1)
         )
         test_file = mocker.MagicMock(
             content_type=file_type,
@@ -89,9 +88,9 @@ async def test_check_category(init_category, category, mocker):
     """test check category"""
     if category == 'SliderCaptcha':
         captcha = CaptchaService('test', category, mocker.MagicMock())
-        result = await captcha.check_category()
+        result = await captcha.get_category()
         assert result.id == 1
     else:
         captcha = CaptchaService(mocker.MagicMock(), category, mocker.MagicMock())
         with pytest.raises(ObjectDoesNotExist):
-            await captcha.check_category()
+            await captcha.get_category()

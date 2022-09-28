@@ -34,7 +34,7 @@ class CaptchaService:
 
     async def check(self) -> Message:
         """check"""
-        captcha = await self.check_category()
+        captcha = await self.get_category()
         file_type = self.file.content_type
         file_uuid = str(uuid.uuid1())
         if 'image' in file_type:
@@ -42,14 +42,15 @@ class CaptchaService:
                 self.file_data, captcha,
                 f'{file_uuid}.{PurePath(file_type).stem}'
             )
-            img_file = upload_file.save()
-            image_captcha = SliderCaptcha(str(img_file))
+            img_file = await upload_file.save()
+            image_captcha = SliderCaptcha(img_file)
             parse_res = image_captcha.parse()
             if parse_res == 0:
                 await self.write_to_db(
                     file_id=file_uuid, category_id=captcha.id,
                     file_type=PurePath(file_type).stem,
-                    creation_time=datetime.datetime.today(), success=False
+                    creation_time=datetime.datetime.today(),
+                    success=False
                 )
                 raise ParsingFailed()
             result_message = Message(
@@ -69,7 +70,6 @@ class CaptchaService:
         if 'image' not in file_type:
             raise UnsupportedMediaType(
                 content='The upload file format is incorrect,please upload the correct image type',
-                media_type=file_type
             )
         raise ObjectDoesNotExist('No captcha type found, Please upload correctly')
 
@@ -81,12 +81,10 @@ class CaptchaService:
         """
         await captcha_repository.create(**kwargs)
 
-    async def check_category(self) -> CategoryModel | ObjectDoesNotExist:
+    async def get_category(self) -> CategoryModel:
         """
         check category
         :return:
         """
         _category: CategoryModel = await category_repository.get_by_name(self.category)
-        if _category is None:
-            raise ObjectDoesNotExist('No captcha type found, Please upload correctly')
         return _category

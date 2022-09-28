@@ -13,7 +13,7 @@ class MessageData(BaseModel):
 class Message(BaseModel):
     """Message"""
     code: int
-    data: MessageData | None
+    data: MessageData | None = None
     message: str
 
 

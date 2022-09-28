@@ -1,4 +1,4 @@
-"""Cracker"""
+"""slider captcha cracker"""
 import logging
 from pathlib import Path
 
@@ -9,10 +9,10 @@ from crawlerstack_anticaptcha.processing.preprocessing import \
 
 
 class SliderCaptcha:
-    """SliderCaptchaChacker"""
+    """SliderCaptchaChecker"""
 
-    def __init__(self, image_file: str):
-        self.preprocessing = ImagePreprocessing(Path(image_file))
+    def __init__(self, image_file: Path):
+        self.preprocessing = ImagePreprocessing(image_file)
         self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
 
     def parse(self):

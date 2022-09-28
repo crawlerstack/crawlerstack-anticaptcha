@@ -19,7 +19,8 @@ def fixture_mock_file_path(mock_path) -> Path:
     yield test_path
 
 
-def test_save(mocker, mock_path):
+@pytest.mark.asyncio
+async def test_save(mocker, mock_path):
     """
     test_save
     :param mocker:
@@ -29,8 +30,9 @@ def test_save(mocker, mock_path):
     upload_file = UploadedFile(b'foo', mocker.MagicMock(), 'bar.txt')
     upload_file.image_save_path = mock_path
     write_to_file = mocker.patch.object(UploadedFile, 'write_to_file')
-    upload_file.save()
+    res = await upload_file.save()
     write_to_file.assert_called()
+    assert res.exists()
 
 
 def test_write_to_file(mocker, mock_path, caplog):

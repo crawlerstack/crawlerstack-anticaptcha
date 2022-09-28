@@ -1,4 +1,5 @@
 """Uploaded file"""
+import asyncio
 import logging
 import os
 from pathlib import Path
@@ -17,18 +18,18 @@ class UploadedFile:
         self.category = category
         self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
 
-    def save(self):
+    async def save(self):
         """save file"""
         try:
-            return self.write_to_file()
+            return await asyncio.to_thread(self.write_to_file)
         except FileNotFoundError:
             self.logger.info('"FileNotFoundError" Mkdir %s', self.IMAGE_SAVE_PATH)
             os.makedirs(Path(self.category.path))
-            return self.write_to_file()
+            return await asyncio.to_thread(self.write_to_file)
 
     def write_to_file(self):
         """write to file"""
-        file = Path(self.category.path).joinpath(Path(self.file_name))
+        file = Path(self.category.path) / self.file_name
         with open(file, 'wb') as obj:
             obj.write(self.data)
         self.logger.info('File %s Save Complete.', file)

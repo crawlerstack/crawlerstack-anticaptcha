@@ -1,0 +1,4 @@
+# sql database config.
+database_url: sqlite+aiosqlite:////tmp/test_captcha.db
+
+show_sql: true
