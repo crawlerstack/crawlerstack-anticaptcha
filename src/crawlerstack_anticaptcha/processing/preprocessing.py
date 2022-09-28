@@ -25,7 +25,7 @@ class ImagePreprocessing:
 
     def thresholding_white(self):
         """
-        Thresholding White
+        thresholding White
         :return:
         """
         _, _threshold = cv2.threshold(self.image, 200, 255, cv2.THRESH_BINARY)
@@ -33,7 +33,7 @@ class ImagePreprocessing:
 
     def thresholding_black(self):
         """
-        thresholding_black
+        thresholding black
         :return:
         """
         _threshold = cv2.adaptiveThreshold(
@@ -42,14 +42,3 @@ class ImagePreprocessing:
             cv2.THRESH_BINARY, 15, 2
         )
         return _threshold
-
-    def show_img(self, image):
-        """
-        show image
-        :param image:
-        :return:
-        """
-        self.logger.info('Show image.')
-        cv2.imshow('img', image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()

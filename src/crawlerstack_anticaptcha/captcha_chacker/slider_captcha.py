@@ -1,4 +1,4 @@
-"""slider captcha cracker"""
+"""slider captcha"""
 import logging
 from pathlib import Path
 
@@ -22,7 +22,7 @@ class SliderCaptcha:
         return length
 
     def canny_detection(self):
-        """canny_detection"""
+        """canny detection"""
         edge = cv2.Canny(self.preprocessing.thresholding_white(), 30, 80)
         length = self.check(edge)
         if length > 0:
@@ -50,5 +50,5 @@ class SliderCaptcha:
             if len(count) < 45:
                 continue
             length = x_coordinate
-        self.logger.info('After parsing, the result is length=%s', length)
+        self.logger.info('After parsing, the result is length=%s.', length)
         return length

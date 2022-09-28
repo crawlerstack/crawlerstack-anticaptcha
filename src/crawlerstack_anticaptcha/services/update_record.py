@@ -1,5 +1,5 @@
 """Update record"""
-from crawlerstack_anticaptcha.repositories.respositories import \
+from crawlerstack_anticaptcha.repositories.respositorie import \
     CaptchaRepository
 
 

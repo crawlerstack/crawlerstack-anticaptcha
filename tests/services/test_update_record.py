@@ -1,7 +1,7 @@
 """test update record"""
 import pytest
 
-from crawlerstack_anticaptcha.repositories.respositories import \
+from crawlerstack_anticaptcha.repositories.respositorie import \
     CaptchaRepository
 from crawlerstack_anticaptcha.services.update_record import UpdateRecordService
 

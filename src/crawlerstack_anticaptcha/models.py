@@ -2,8 +2,9 @@
 from datetime import datetime
 
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import declarative_base
 
-from crawlerstack_anticaptcha.db import BaseModel
+BaseModel = declarative_base()
 
 
 class CategoryModel(BaseModel):
@@ -24,7 +25,7 @@ class CaptchaModel(BaseModel):
     file_id = Column(String(255), comment='Id generated from filename', unique=True)
     category_id = Column(ForeignKey('category.id'), comment='Captcha type id')
     file_type = Column(String(255), comment='Image file type')
-    creation_time = Column(DateTime, default=datetime.now, comment='Creation time')
+    create_time = Column(DateTime, default=datetime.now, comment='Creation time')
     success = Column(Boolean, comment='Explain success')
 
     def __repr__(self):

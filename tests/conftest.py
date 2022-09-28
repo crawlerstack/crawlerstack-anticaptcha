@@ -1,18 +1,21 @@
 """Test config"""
 import asyncio
-from datetime import datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import pytest
+from fastapi.testclient import TestClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
                                     create_async_engine)
 from sqlalchemy.orm import sessionmaker
 
 from crawlerstack_anticaptcha import config
-from crawlerstack_anticaptcha.db import BaseModel
-from crawlerstack_anticaptcha.models import CaptchaModel, CategoryModel
+from crawlerstack_anticaptcha.api import app
+from crawlerstack_anticaptcha.models import (BaseModel, CaptchaModel,
+                                             CategoryModel)
+from crawlerstack_anticaptcha.repositories.respositorie import (
+    CaptchaRepository, CategoryRepository)
 
 
 @pytest.fixture(name='settings')
@@ -26,6 +29,20 @@ def mock_path() -> Path:
     """Mock a path, and clean when unit test done."""
     with TemporaryDirectory() as temp_path:
         yield Path(temp_path)
+
+
+@pytest.fixture(name='category_repository')
+def category_repository_fixture():
+    """category repository fixture"""
+    category_repository = CategoryRepository()
+    yield category_repository
+
+
+@pytest.fixture(name='captcha_repository')
+def captcha_repository_fixture():
+    """captcha repository fixture"""
+    captcha_repository = CaptchaRepository()
+    yield captcha_repository
 
 
 @pytest.fixture(autouse=True, name='migrate')
@@ -97,7 +114,13 @@ async def init_captcha_fixture(session, init_category):
             CaptchaModel(
                 file_id='foo',
                 category_id=objs[0].id,
-                creation_time=datetime.today(),
             ),
         ]
         session.add_all(captchas)
+
+
+@pytest.fixture(name='client')
+def app_client_fixture():
+    """app_client_fixture"""
+    client = TestClient(app)
+    yield client

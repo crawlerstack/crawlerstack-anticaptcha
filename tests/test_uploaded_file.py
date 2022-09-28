@@ -4,19 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from crawlerstack_anticaptcha.models import CategoryModel
 from crawlerstack_anticaptcha.utils.upload_file import UploadedFile
-
-
-@pytest.fixture(name='mock_path')
-def fixture_mock_file_path(mock_path) -> Path:
-    """
-    fixture_mock_file_path
-    :param mock_path:
-    :return:
-    """
-    test_path = mock_path
-    yield test_path
 
 
 @pytest.mark.asyncio
@@ -27,30 +15,33 @@ async def test_save(mocker, mock_path):
     :param mock_path:
     :return:
     """
-    upload_file = UploadedFile(b'foo', mocker.MagicMock(), 'bar.txt')
-    upload_file.image_save_path = mock_path
+    test_file = mock_path / 'foo.txt'
+    upload_file = UploadedFile(b'foo', test_file)
     write_to_file = mocker.patch.object(UploadedFile, 'write_to_file')
-    res = await upload_file.save()
+    await upload_file.save()
     write_to_file.assert_called()
-    assert res.exists()
 
 
-def test_write_to_file(mocker, mock_path, caplog):
+@pytest.mark.asyncio
+async def test_save_not_fount(mock_path):
+    """test error situation"""
+    test_file = mock_path / 'test' / 'foo.txt'
+    upload_file = UploadedFile(b'foo', test_file)
+    await upload_file.save()
+    assert Path(test_file).parent.exists()
+
+
+def test_write_to_file(mock_path, caplog):
     """
     test_write_to_file
-    :param mocker:
     :param mock_path:
     :param caplog:
     :return:
     """
-    caplog.set_level(logging.INFO)
-    test_category = mocker.MagicMock(
-        path=mock_path,
-        return_value=CategoryModel
-    )
-    upload_file = UploadedFile(b'1', test_category, 'test.dat')
-    result = upload_file.write_to_file()
-    with open(Path(result), 'rb') as obj:
+    test_file = mock_path / 'foo.txt'
+    with caplog.at_level(logging.INFO):
+        upload_file = UploadedFile(b'1', test_file)
+        upload_file.write_to_file()
+        assert 'Save Complete' in caplog.text
+    with open(test_file, 'rb') as obj:
         assert obj.read() == b'1'
-    assert 'Save Complete' in caplog.text
-    assert 'test.dat' in str(result)

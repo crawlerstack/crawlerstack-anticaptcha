@@ -9,7 +9,7 @@ from sqlalchemy import engine_from_config, pool
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from crawlerstack_anticaptcha.config import settings
-from crawlerstack_anticaptcha.db import BaseModel
+from crawlerstack_anticaptcha.models import BaseModel
 
 config = context.config
 

@@ -25,10 +25,10 @@ class UnsupportedMediaType(CrawlerStackAnticaptcha):
         self.content = content
 
 
-class ParsingFailed(CrawlerStackAnticaptcha):
+class SliderCaptchaParseFailed(CrawlerStackAnticaptcha):
     """
-    Parsing failed
+    SliderCaptchaParseFailed
     """
 
     def __init__(self):
-        self.content = 'Parsing failed, Please upload again'
+        self.content = 'Parsing failed, please upload again.'

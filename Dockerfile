@@ -21,9 +21,7 @@ WORKDIR /app
 COPY --from=0 /app/dist /app/dist
 
 RUN python -m pip install -U pip \
-    && pip install --no-cache-dir /app/dist/*.whl \
-    && pip uninstall opencv-python -y\
-    && pip install opencv-python-headless==4.5.5.64
+    && pip install --no-cache-dir /app/dist/*.whl
 
 EXPOSE 8080
 

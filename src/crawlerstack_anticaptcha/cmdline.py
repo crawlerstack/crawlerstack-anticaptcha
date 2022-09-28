@@ -23,7 +23,7 @@ def main(ctx, version):
 @main.command()
 @click.option('-h', '--host', default='0.0.0.0', show_default=True,
               help='The host of the api service')
-@click.option('-p', '--port', default=8080, show_default=True, help='Api service port')
+@click.option('-p', '--port', default=8080, show_default=True, help='Api service port.')
 def api(host, port):
     """Start api service"""
     start(str(host), int(port))

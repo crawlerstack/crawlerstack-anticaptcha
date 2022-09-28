@@ -1,4 +1,4 @@
-"""SqlRepository"""
+"""Repository"""
 import logging
 
 from sqlalchemy import delete
@@ -22,7 +22,7 @@ class BaseRepository:
 
     async def create(self, /, **kwargs):
         """
-        insert
+        create
         :param kwargs:
         :return:
         """
@@ -30,11 +30,10 @@ class BaseRepository:
         async with async_session() as session:
             async with session.begin():
                 session.add(obj)
-                self.logger.info('Insert %s', obj)
+                self.logger.debug('Create %s', obj)
 
-    async def query_all(self):
-        """query_all"""
-        self.logger.info('query all')
+    async def get_all(self):
+        """get all"""
         async with async_session() as session:
             result = await session.execute(select(self.model))
             return result.scalars().all()
@@ -69,9 +68,8 @@ class CategoryRepository(BaseRepository):
         async with async_session() as session:
             result = await session.scalar(stmt)
             if result is None:
-                self.logger.error('Object Does Not Exist')
                 raise ObjectDoesNotExist('No captcha type found, Please upload correctly')
-            self.logger.info('Get %s from Captcha', name)
+            self.logger.debug('Get %s from Captcha', name)
             return result
 
 
@@ -84,12 +82,16 @@ class CaptchaRepository(BaseRepository):
         return CaptchaModel
 
     async def get_by_file_id(self, file_id: str):
-        """get_by_file_id"""
-        self.logger.info('Get %s from Captcha', file_id)
+        """
+        get by file id
+        :param file_id:
+        :return:
+        """
+        self.logger.debug('Get %s from "%s".', file_id, self.model.__tablename__)
         stmt = select(self.model).where(self.model.file_id == file_id)
         async with async_session() as session:
-            result = await session.scalars(stmt)
-            return result.all()
+            result = await session.scalar(stmt)
+            return result
 
     async def update_by_file_id(self, file_id: str, success: bool):
         """
@@ -103,13 +105,13 @@ class CaptchaRepository(BaseRepository):
             async with session.begin():
                 obj = await session.scalar(stmt)
                 if obj is None:
-                    raise ObjectDoesNotExist('File Id Does Not Exist')
+                    raise ObjectDoesNotExist(f'Can not find object by file_id="{file_id}".')
                 obj.success = success
-                self.logger.info('Update file=%s success=%s', file_id, success)
+                self.logger.debug('Update %s.', obj)
 
     async def delete_by_file_id(self, file_id):
         """
-        delete one
+        delete by file id
         :param file_id:
         :return:
         """

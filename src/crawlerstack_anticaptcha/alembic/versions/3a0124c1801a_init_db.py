@@ -1,16 +1,16 @@
-"""add create date in  table
+"""init_db
 
-Revision ID: d6501c5fe90d
-Revises: f42e6c63c369
-Create Date: 2022-09-28 11:41:40.154422
+Revision ID: 3a0124c1801a
+Revises: 
+Create Date: 2022-09-28 19:43:33.850497
 
 """
 import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = 'd6501c5fe90d'
-down_revision = 'f42e6c63c369'
+revision = '3a0124c1801a'
+down_revision = None
 branch_labels = None
 depends_on = None
 
