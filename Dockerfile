@@ -28,4 +28,4 @@ RUN python -m pip install -U pip \
 EXPOSE 8080
 
 ENTRYPOINT ["crawlerstack_anticaptcha"]
-CMD ["api","-p","8080"]
+CMD ["api","-p","8000"]

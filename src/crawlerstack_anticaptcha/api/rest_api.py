@@ -2,30 +2,14 @@
 import logging
 
 import uvicorn
-from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, File, Form, UploadFile
 
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
 from crawlerstack_anticaptcha.services.update_record import UpdateRecordService
-from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
 from crawlerstack_anticaptcha.utils.schema import RecordItem
 
 logger = logging.getLogger(f'{__name__}  {__name__}')
 app = FastAPI()
-
-
-@app.exception_handler(ObjectDoesNotExist)
-async def exception_handler(_: Request, exc: ObjectDoesNotExist):
-    """
-    exception_handler
-    :param _:
-    :param exc:
-    :return:
-    """
-    return JSONResponse(
-        status_code=404,
-        content={"message": exc.content},
-    )
 
 
 @app.post('/crawlerstack/captcha/identify/')
@@ -39,8 +23,6 @@ async def anticaptcha(
     data = await file.read()
     captcha_service = CaptchaService(file, category, data)
     result_message = await captcha_service.check()
-    if result_message.code != 200:
-        raise HTTPException(status_code=415, detail=result_message)
     return result_message
 
 

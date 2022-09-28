@@ -4,16 +4,14 @@ import logging
 from sqlalchemy import delete
 from sqlalchemy.future import select
 
-from crawlerstack_anticaptcha.config import settings
 from crawlerstack_anticaptcha.db import async_session
 from crawlerstack_anticaptcha.models import CaptchaModel, CategoryModel
-from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
+from crawlerstack_anticaptcha.utils.exception import (ObjectDoesNotExist,
+                                                      ObjectIndexError)
 
 
 class BaseRepository:
     """BaseRepository"""
-    DATABASE_URL = settings.DATABASE_URL
-    PK_TABLE = 'category'
 
     def __init__(self):
         self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
@@ -33,7 +31,7 @@ class BaseRepository:
         async with async_session() as session:
             async with session.begin():
                 session.add(obj)
-                self.logger.info('Inserted %s', obj)
+                self.logger.info('Insert %s', obj)
 
     async def query_all(self):
         """query_all"""
@@ -73,7 +71,6 @@ class CategoryRepository(BaseRepository):
             result = await session.scalar(stmt)
             if result is None:
                 self.logger.info('Object Does Not Exist')
-                raise ObjectDoesNotExist('No captcha type found')
             self.logger.info('Get %s from Captcha', name)
             return result
 
@@ -91,8 +88,8 @@ class CaptchaRepository(BaseRepository):
         self.logger.info('Get %s from Captcha', file_id)
         stmt = select(self.model).where(self.model.file_id == file_id)
         async with async_session() as session:
-            result = await session.scalar(stmt)
-            return result
+            result = await session.scalars(stmt)
+            return result.all()
 
     async def update_by_file_id(self, file_id: str, success: bool):
         """
@@ -104,11 +101,15 @@ class CaptchaRepository(BaseRepository):
         stmt = select(self.model).where(self.model.file_id == file_id)
         async with async_session() as session:
             async with session.begin():
-                obj = await session.scalar(stmt)
-                if obj is None:
+                obj = await session.scalars(stmt)
+                result = obj.all()
+                if not result:
                     raise ObjectDoesNotExist('File Id Does Not Exist')
-                obj.success = success
-                self.logger.info('Update file=%s success=%s', file_id, success)
+                if len(result) > 1:
+                    raise ObjectIndexError()
+                for i in result:
+                    i.success = success
+                    self.logger.info('Update file=%s success=%s', file_id, success)
 
     async def delete_by_file_id(self, file_id):
         """

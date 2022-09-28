@@ -19,8 +19,6 @@ class SliderCaptcha:
         """parse"""
         self.logger.info('Parse Captcha.')
         length = self.canny_detection()
-        if length == 0:
-            return 'Parsing failed, Please upload again.'
         return length
 
     def canny_detection(self):

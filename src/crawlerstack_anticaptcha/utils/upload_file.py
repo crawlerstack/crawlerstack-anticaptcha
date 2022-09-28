@@ -28,8 +28,7 @@ class UploadedFile:
 
     def write_to_file(self):
         """write to file"""
-        file = Path(
-            self.category.path).joinpath(Path(self.file_name))
+        file = Path(self.category.path).joinpath(Path(self.file_name))
         with open(file, 'wb') as obj:
             obj.write(self.data)
         self.logger.info('File %s Save Complete.', file)

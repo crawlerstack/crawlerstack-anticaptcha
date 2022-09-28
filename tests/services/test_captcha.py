@@ -1,4 +1,4 @@
-"""Test"""
+"""Test Captcha Service"""
 
 import pytest
 from fastapi import File
@@ -9,7 +9,8 @@ from crawlerstack_anticaptcha.models import CategoryModel
 from crawlerstack_anticaptcha.repositories.respositories import (
     CaptchaRepository, CategoryRepository)
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
-from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
+from crawlerstack_anticaptcha.utils.exception import (ObjectDoesNotExist,
+                                                      UnsupportedMediaType)
 from crawlerstack_anticaptcha.utils.upload_file import UploadedFile
 
 
@@ -54,8 +55,7 @@ async def test_check(mocker, file_type):
         mocker.patch.object(
             CategoryRepository,
             'get_by_name',
-            return_value=CategoryModel(
-                name='SliderCategory', path='test', id=1)
+            return_value=CategoryModel(name='SliderCategory', path='test', id=1)
         )
         test_file = mocker.MagicMock(
             content_type=file_type,
@@ -63,8 +63,9 @@ async def test_check(mocker, file_type):
         )
         data = mocker.MagicMock()
         captcha_service = CaptchaService(test_file, 'test', data)
-        result = await captcha_service.check()
-        assert result.code == 415
+        with pytest.raises(UnsupportedMediaType):
+            result = await captcha_service.check()
+            assert result.code == 415
 
 
 @pytest.mark.asyncio

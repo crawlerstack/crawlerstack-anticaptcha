@@ -33,7 +33,8 @@ async def test_create(init_category):
         success=None
     )
     result = await captcha_repository.get_by_file_id('test')
-    assert result.success is None
+    for i in result:
+        assert i.success is None
 
 
 @pytest.mark.asyncio
@@ -45,7 +46,8 @@ async def test_captcha_update(init_category):
     )
     await captcha_repository.update_by_file_id('test', False)
     result = await captcha_repository.get_by_file_id('test')
-    assert not result.success
+    for i in result:
+        assert not i.success
 
 
 @pytest.mark.asyncio
@@ -62,4 +64,4 @@ async def test_delete_by_file_id(init_captcha):
     """test_delete_by_file_id"""
     await captcha_repository.delete_by_file_id('foo')
     result = await captcha_repository.get_by_file_id('foo')
-    assert result is None
+    assert not result

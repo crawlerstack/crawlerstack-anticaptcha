@@ -93,3 +93,14 @@ put 返回值
 | id  | file_id | category | file_type | creation_time | success |
 |:---:|:-------:|:--------:|:---------:|:-------------:|:-------:|
 |  1  |  uuid   |    1     |    jpg    |    2022...    |  NULL   |  
+
+## 注意：
+
+- 构建docker后，运行报错：`ImportError: libGL.so.1: cannot open shared object file: No such file or directory`
+
+  opencv在docker环境下使用无需 GUI 库依赖项，
+  所以使用 `pip install opencv-python-headless`  [无头主模块包](https://pypi.org/project/opencv-python-headless/)
+  或 `opencv-contrib-python-headless`Headless 完整包 安装
+
+- 使用 docker-compose 同时开启应用服务和mysql服务时，由于多容器构建有先后顺序，应用容器运行后不确保MySQL已开启，导致应用程序连接数据库不成功
+

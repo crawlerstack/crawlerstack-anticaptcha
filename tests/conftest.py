@@ -77,11 +77,11 @@ async def init_category_fixture(session, settings):
         categories = [
             CategoryModel(
                 name='SliderCaptcha',
-                path=str(Path(f'{settings.IMAGE_SAVE_PATH}').joinpath(Path('slider-captcha')))
+                path=str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('slider-captcha')))
             ),
             CategoryModel(
                 name='RotatedCaptcha',
-                path=str(Path(f'{settings.IMAGE_SAVE_PATH}').joinpath(Path('rotated-captcha')))
+                path=str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('rotated-captcha')))
             )
         ]
         session.add_all(categories)

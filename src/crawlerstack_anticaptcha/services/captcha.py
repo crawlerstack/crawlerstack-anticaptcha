@@ -2,6 +2,7 @@
 import datetime
 import logging
 import uuid
+from pathlib import PurePath
 
 from fastapi import File
 
@@ -10,7 +11,9 @@ from crawlerstack_anticaptcha.captcha_chacker.slider_captcha import \
 from crawlerstack_anticaptcha.models import CategoryModel
 from crawlerstack_anticaptcha.repositories.respositories import (
     CaptchaRepository, CategoryRepository)
-from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
+from crawlerstack_anticaptcha.utils.exception import (ObjectDoesNotExist,
+                                                      ParsingFailed,
+                                                      UnsupportedMediaType)
 from crawlerstack_anticaptcha.utils.schema import Message, MessageData
 from crawlerstack_anticaptcha.utils.upload_file import UploadedFile
 
@@ -37,11 +40,18 @@ class CaptchaService:
         if 'image' in file_type:
             upload_file = UploadedFile(
                 self.file_data, captcha,
-                f'{file_uuid}.{self.file.filename.split(".")[1]}'
+                f'{file_uuid}.{PurePath(file_type).stem}'
             )
             img_file = upload_file.save()
             image_captcha = SliderCaptcha(str(img_file))
             parse_res = image_captcha.parse()
+            if parse_res == 0:
+                await self.write_to_db(
+                    file_id=file_uuid, category_id=captcha.id,
+                    file_type=PurePath(file_type).stem,
+                    creation_time=datetime.datetime.today(), success=False
+                )
+                raise ParsingFailed()
             result_message = Message(
                 code=200,
                 data=MessageData(
@@ -57,14 +67,10 @@ class CaptchaService:
             return result_message
 
         if 'image' not in file_type:
-            result_message = Message(
-                code=415,
-                data=None,
-                message='The upload file format is incorrect,'
-                        'please upload the correct image type'
+            raise UnsupportedMediaType(
+                content='The upload file format is incorrect,please upload the correct image type',
+                media_type=file_type
             )
-            return result_message
-
         raise ObjectDoesNotExist('No captcha type found, Please upload correctly')
 
     @staticmethod
