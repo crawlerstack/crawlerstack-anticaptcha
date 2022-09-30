@@ -8,6 +8,9 @@ jobs:
   test:
     runs-on: ${{ matrix.os  }}
 
+    permissions:
+      pull-requests: write
+
     strategy:
       fail-fast: false
       matrix:
