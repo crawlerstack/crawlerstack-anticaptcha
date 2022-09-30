@@ -22,7 +22,7 @@
 
 ## 接口调用
 
-poet 请求
+- poet 请求
 
 ```base
 url = "***/crawlerstack/captcha/identify/"
@@ -35,7 +35,7 @@ files=[
 response = requests.post(url, data=payload, files=files)
 ```
 
-put 请求
+- put 请求
 
 ```base
 url = "***/crawlerstack/captcha/record/[file-uuid]"
@@ -96,11 +96,72 @@ put 返回值
 
 ## 注意：
 
+### opencv
+
 - 构建docker后，运行报错：`ImportError: libGL.so.1: cannot open shared object file: No such file or directory`
 
   opencv在docker环境下使用无需 GUI 库依赖项，
   所以使用 `pip install opencv-python-headless`  [无头主模块包](https://pypi.org/project/opencv-python-headless/)
   或 `opencv-contrib-python-headless`Headless 完整包 安装
 
-- 使用 docker-compose 同时开启应用服务和mysql服务时，由于多容器构建有先后顺序，应用容器运行后不确保MySQL已开启，导致应用程序连接数据库不成功
+### docker部署
 
+先开启MySQL服务容器，再使用 `docker-compose` 构建运行应用服务
+开启MySQL容器
+
+```base
+docker run -e MYSQL_ROOT_PASSWORD=[password] -e MYSQL_DATABASE=[database] -p 3307:3306 --network db --name mysql mysql:debian
+```
+
+再执行构建应用容器
+
+```base
+docker compose build
+docker compose up
+```
+
+### 数据库迁移（使用alembic）
+
+生成本地初始化脚本
+
+```base
+alembic revision -m "init_db"
+```
+
+更新数据库版本
+
+```base
+alembic upgrade head 
+```
+
+生成迁移代码
+
+```base
+alembic revision --autogenerate -m "init_table"
+```
+
+其中需要初始化写入的数据需手动补充
+
+```base
+category_table = op.create_table('category',)...
+...
+    op.bulk_insert(
+        category_table,
+        [
+            {
+                "name": "SliderCaptcha",
+                "path": str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('slider-captcha')))
+            },
+            {
+                "name": "RotatedCaptcha",
+                "path": str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('rotated-captcha')))
+            }
+        ]
+    )
+```
+
+最后执行升级`upgrade`命令将数据库升级到最新
+
+```base
+alembic upgrade head 
+```
