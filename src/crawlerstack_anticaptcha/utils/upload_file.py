@@ -25,4 +25,4 @@ class UploadedFile:
         """write to file"""
         with open(self.file, 'wb') as obj:
             obj.write(self.data)
-        self.logger.info('File %s Save Complete.', self.file)
+        self.logger.debug('Save file to %s.', self.file)

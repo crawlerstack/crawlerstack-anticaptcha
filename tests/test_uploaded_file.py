@@ -39,9 +39,9 @@ def test_write_to_file(mock_path, caplog):
     :return:
     """
     test_file = mock_path / 'foo.txt'
-    with caplog.at_level(logging.INFO):
+    with caplog.at_level(logging.DEBUG):
         upload_file = UploadedFile(b'1', test_file)
         upload_file.write_to_file()
-        assert 'Save Complete' in caplog.text
+        assert 'Save file' in caplog.text
     with open(test_file, 'rb') as obj:
         assert obj.read() == b'1'
