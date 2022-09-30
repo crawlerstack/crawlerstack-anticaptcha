@@ -36,7 +36,7 @@ jobs:
       - name: Test Reports
         uses: xportation/junit-coverage-report@main
         with:
-          junit-path: ./pytest.xml  
+          junit-path: ./pytest.xml 
           coverage-path: ./coverage.xml
 
   linting:
