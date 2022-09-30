@@ -220,3 +220,6 @@ pip-selfcheck.json
 **/.secrets.yml
 **/demo.py
 data
+
+pytest.xml
+pytest-coverage.txt

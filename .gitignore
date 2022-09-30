@@ -135,3 +135,6 @@ cython_debug/
 .idea
 **/settings.local.yml
 **/demo.py
+
+pytest.xml
+pytest-coverage.txt

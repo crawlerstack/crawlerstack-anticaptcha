@@ -29,7 +29,14 @@ jobs:
           pip install poetry
       - name: Test with tox
         run: |
-          tox -e py
+          tox -e py | tee pytest-coverage.txt
+
+      - name: Pytest coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: ./pytest-coverage.txt
+          junitxml-path: ./pytest.xml
+
   linting:
     runs-on: ubuntu-latest
     steps:
