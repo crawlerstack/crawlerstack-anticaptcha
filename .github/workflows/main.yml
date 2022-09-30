@@ -31,11 +31,11 @@ jobs:
         run: |
           tox -e py | tee pytest-coverage.txt
 
-      - name: Pytest coverage comment
-        uses: MishaKav/pytest-coverage-comment@main
+      - name: Test Reports
+        uses: xportation/junit-coverage-report@main
         with:
-          pytest-coverage-path: ./pytest-coverage.txt
-          junitxml-path: ./pytest.xml
+          junit-path: ./pytest.xml
+          coverage-path: ./coverage.xml
 
   linting:
     runs-on: ubuntu-latest
