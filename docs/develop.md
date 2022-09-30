@@ -58,13 +58,13 @@ post 返回值
 
 ```json
 {
-  "code": 200,
-  "data": {
-    "file_id": "bd107b6d-3987-11ed-a9cc-50ebf6777188",
-    "value": 106,
-    "category": "SliderCaptcha"
-  },
-  "message": "File parsing succeeded"
+    "code": 200,
+    "data": {
+        "file_id": "f1261966-406b-11ed-a416-0242ac140002",
+        "value": 242,
+        "category": "SliderCaptcha"
+    },
+    "message": "File parsing succeeded."
 }
 ```
 
@@ -72,11 +72,9 @@ put 返回值
 
 ```json
 {
-  "file_id": "bd107b6d-3987-11ed-a9cc-50ebf6777188",
-  "item": {
-    "category": "SliderCaptcha",
-    "success": true
-  }
+    "code": 200,
+    "data": null,
+    "message": "Update file id is the \"success\"=True of f1261966-406b-11ed-a416-0242ac140002."
 }
 ```
 

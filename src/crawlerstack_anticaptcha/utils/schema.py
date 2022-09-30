@@ -15,9 +15,3 @@ class Message(BaseModel):
     code: int
     data: MessageData | None = None
     message: str
-
-
-class RecordItem(BaseModel):
-    """RecordingItem"""
-    category: str
-    success: bool

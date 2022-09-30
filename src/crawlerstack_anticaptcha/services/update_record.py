@@ -1,6 +1,7 @@
 """Update record"""
 from crawlerstack_anticaptcha.repositories.respositorie import \
     CaptchaRepository
+from crawlerstack_anticaptcha.utils.schema import Message
 
 
 class UpdateRecordService:
@@ -17,3 +18,9 @@ class UpdateRecordService:
             self.file_id,
             self.success
         )
+        result = Message(
+            code=200,
+            data=None,
+            message=f'Update file id is the "success"={self.success} of "{self.file_id}".'
+        )
+        return result

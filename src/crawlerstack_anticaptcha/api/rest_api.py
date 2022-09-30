@@ -6,7 +6,6 @@ from fastapi import FastAPI, File, Form, UploadFile
 
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
 from crawlerstack_anticaptcha.services.update_record import UpdateRecordService
-from crawlerstack_anticaptcha.utils.schema import RecordItem
 
 logger = logging.getLogger(f'{__name__}  {__name__}')
 app = FastAPI()
@@ -27,13 +26,13 @@ async def anticaptcha(
 
 
 @app.put('/crawlerstack/captcha/record/{file_id}')
-async def record(file_id: str, item: RecordItem):
+async def record(file_id: str, success: bool = Form()):
     """
     The interface that counts whether the captcha is parsed successfully
     """
-    update = UpdateRecordService(item.success, file_id)
-    await update.update()
-    return {'file_id': file_id, 'item': item}
+    update = UpdateRecordService(success, file_id)
+    result = await update.update()
+    return result
 
 
 def start(host: str, port: int):
