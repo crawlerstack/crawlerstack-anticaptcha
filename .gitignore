@@ -137,4 +137,4 @@ cython_debug/
 **/demo.py
 
 pytest.xml
-pytest-coverage.txt
+coverage.xml
