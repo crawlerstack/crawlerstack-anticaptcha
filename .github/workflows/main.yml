@@ -20,7 +20,7 @@ jobs:
           pip install poetry
       - name: Test with tox
         run: |
-          tox -e py | tee pytest-coverage.txt
+          tox -e py
 
   linting:
     runs-on: ubuntu-latest
