@@ -1,0 +1,45 @@
+name: main
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os  }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-20.04 ]
+        python: [ "3.10" ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python }} on ${{ matrix.os }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox
+          pip install poetry
+      - name: Test with tox
+        run: |
+          tox -e py
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v2
+
+      - run: |
+          pip install tox
+          pip install isort
+          pip install pylint
+      - run: |
+          tox -e isort
+          tox -e pylint
