@@ -4,6 +4,20 @@ from crawlerstack_anticaptcha.repositories.respositorie import \
     CaptchaRepository
 
 
+def test_get_category(client, init_category):
+    """test get category"""
+    response = client.get('/crawlerstack/category/query/')
+    assert response.status_code == 200
+    assert response.json() == {
+        "code": 200,
+        "data": [
+            {"id": 1, "name": "SliderCaptcha"},
+            {"id": 2, "name": "RotatedCaptcha"}
+        ],
+        "message": "The identified captcha category can be provided."
+    }
+
+
 def test_receive_parse_results(mocker, client):
     """test receive parse results"""
     payload = {"success": False}

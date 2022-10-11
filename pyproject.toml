@@ -42,7 +42,9 @@ disable = ["too-few-public-methods", "unused-argument"]
 good-names = [
     "pk",
     "i",
-    "foo"
+    "foo",
+    "h",
+    "w"
 ]
 max-line-length = 110
 ignore = ["versions"]

@@ -2,8 +2,7 @@
 
 import pytest
 
-from crawlerstack_anticaptcha.captcha_chacker.slider_captcha import \
-    SliderCaptcha
+from crawlerstack_anticaptcha.anticaptcha.slider_captcha import SliderCaptcha
 from crawlerstack_anticaptcha.models import CategoryModel
 from crawlerstack_anticaptcha.repositories.respositorie import \
     CaptchaRepository

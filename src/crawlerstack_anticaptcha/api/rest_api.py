@@ -5,10 +5,18 @@ import uvicorn
 from fastapi import FastAPI, File, Form, UploadFile
 
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
+from crawlerstack_anticaptcha.services.category import CategoryService
 from crawlerstack_anticaptcha.services.update_record import UpdateRecordService
 
 logger = logging.getLogger(f'{__name__}  {__name__}')
 app = FastAPI()
+
+
+@app.get('/crawlerstack/category/query/')
+async def get_category():
+    """Query captcha category list"""
+    category = CategoryService()
+    return await category.get_all()
 
 
 @app.post('/crawlerstack/captcha/identify/')

@@ -31,7 +31,7 @@ alembic revision -m "init_db"
 更新数据库版本
 
 ```base
-alembic upgrade head 
+alembic upgrade head
 ```
 
 生成迁移代码
