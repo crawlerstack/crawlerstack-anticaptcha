@@ -3,11 +3,10 @@ image_save_path: /tmp/captcha-service
 
 
 # log config
-log_path: /tmp/captcha-service/
+log_path: /tmp/captcha-service
 log_level: INFO
 
 # sql database config.
 database_url: sqlite+aiosqlite:////tmp/captcha_database.db
-#database_url: mysql+aiomysql://root:123qweasd@localhost:3306/test
 
 show_sql: false
