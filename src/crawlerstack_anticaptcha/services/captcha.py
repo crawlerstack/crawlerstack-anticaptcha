@@ -5,10 +5,10 @@ from pathlib import Path, PurePath
 
 from fastapi import File
 
+from crawlerstack_anticaptcha.captcha.slider.captcha import SliderCaptcha
 from crawlerstack_anticaptcha.models import CategoryModel
 from crawlerstack_anticaptcha.repositories.respositorie import (
     CaptchaRepository, CategoryRepository)
-from crawlerstack_anticaptcha.slider_captcha.captcha import SliderCaptcha
 from crawlerstack_anticaptcha.utils.exception import (SliderCaptchaParseFailed,
                                                       UnsupportedMediaType)
 from crawlerstack_anticaptcha.utils.schema import Message, MessageData

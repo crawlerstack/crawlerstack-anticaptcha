@@ -4,7 +4,7 @@ from pathlib import Path
 
 import cv2
 
-from crawlerstack_anticaptcha.slider_captcha.preprocessing import \
+from crawlerstack_anticaptcha.captcha.slider.preprocessing import \
     ImagePreprocessing
 
 

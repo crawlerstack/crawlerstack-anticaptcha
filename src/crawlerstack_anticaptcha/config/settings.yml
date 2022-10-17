@@ -9,3 +9,5 @@ log_level: INFO
 database_url: sqlite+aiosqlite:////tmp/captcha_database.db
 
 show_sql: false
+
+tesseract_cmd_path:

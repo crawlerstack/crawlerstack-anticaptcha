@@ -32,3 +32,12 @@ class SliderCaptchaParseFailed(CrawlerStackAnticaptcha):
 
     def __init__(self):
         self.content = 'Parsing failed, please upload again.'
+
+
+class NumericalCaptchaParseFailed(CrawlerStackAnticaptcha):
+    """
+    NumericalCaptchaParseFailed
+    """
+
+    def __init__(self):
+        self.content = 'Parse failed.'

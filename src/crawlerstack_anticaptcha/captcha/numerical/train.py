@@ -11,9 +11,6 @@ from sklearn.svm import SVC
 
 from crawlerstack_anticaptcha.config import settings
 
-train_images_path = Path('/tmp/download_image/train')
-test_path = Path("/tmp/download_image/part/test")
-model_path = Path('../captcha_models/numerical_captcha.pkl')
 train_set_x = []
 train_set_y = []
 
@@ -21,10 +18,10 @@ train_set_y = []
 class NumericalModel:
     """NumericalModel"""
     train_images_path = Path(settings.IMAGE_SAVE_PATH) / 'numerical-captcha/train'
-    test_path = Path(settings.IMAGE_SAVE_PATH) / 'numerical-captcha/test'
-    model_path = Path('../captcha_models')
+    model_path = Path('../models')
 
-    def __init__(self):
+    def __init__(self, image_list: list):
+        self.image_list = image_list
         self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
 
     @staticmethod
@@ -52,7 +49,7 @@ class NumericalModel:
                 continue
             for file in category.iterdir():
                 img = cv2.imread(str(file.resolve()), 0)
-                res = cv2.resize(img, (14, 10))
+                res = cv2.resize(img, (19, 23))
                 res_1 = res.reshape(140)
                 res_list = res_1.tolist()
                 train_set_x.append(res_list)
@@ -60,16 +57,17 @@ class NumericalModel:
             letter_svm = SVC(kernel="linear", C=1).fit(train_set_x, train_set_y)
             joblib.dump(letter_svm, self.model_path / 'numerical_captcha.pkl')
 
-    def verify(self):
-        """verify"""
+    def identify(self):
+        """identify"""
         captcha = []
-        clf = joblib.load(model_path / 'numerical_captcha.pkl')
-        for i in self.test_path.iterdir():
+        clf = joblib.load(self.model_path / 'numerical_captcha.pkl')
+        for i in self.image_list:
             img = cv2.imread(str(i.resolve()), 0)
-            img_resize = cv2.resize(img, (14, 10))
+            img_resize = cv2.resize(img, (19, 23))
             data = img_resize.reshape(140)
             data = data.reshape(1, -1)
             num = clf.predict(data)[0]
             captcha.append(num)
-        captcha = ','.join(map(str, captcha))
+        captcha = ''.join(map(str, captcha))
         self.logger.info('The captcha result is %s', captcha)
+        return captcha
