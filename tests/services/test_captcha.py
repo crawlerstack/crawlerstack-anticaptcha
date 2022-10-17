@@ -2,11 +2,11 @@
 
 import pytest
 
-from crawlerstack_anticaptcha.anticaptcha.slider_captcha import SliderCaptcha
 from crawlerstack_anticaptcha.models import CategoryModel
 from crawlerstack_anticaptcha.repositories.respositorie import \
     CaptchaRepository
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
+from crawlerstack_anticaptcha.slider_captcha.captcha import SliderCaptcha
 from crawlerstack_anticaptcha.utils.exception import (ObjectDoesNotExist,
                                                       SliderCaptchaParseFailed,
                                                       UnsupportedMediaType)

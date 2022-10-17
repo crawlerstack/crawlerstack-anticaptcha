@@ -20,6 +20,7 @@ aiosqlite = "^0.17.0"
 alembic = "^1.8.1"
 pytest-cov = "^4.0.0"
 opencv-python-headless = "4.5.5.64"
+scikit-learn = "^1.1.2"
 
 
 [tool.poetry.dev-dependencies]
@@ -44,10 +45,11 @@ good-names = [
     "i",
     "foo",
     "h",
-    "w"
+    "w",
+    "f",
 ]
 max-line-length = 110
-ignore = ["versions"]
+ignore = ["versions", 'demo.py']
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

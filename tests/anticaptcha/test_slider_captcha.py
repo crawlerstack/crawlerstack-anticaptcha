@@ -1,7 +1,7 @@
 """Test cracker"""
 
-from crawlerstack_anticaptcha.anticaptcha.slider_captcha import SliderCaptcha
-from crawlerstack_anticaptcha.processing.preprocessing import \
+from crawlerstack_anticaptcha.slider_captcha.captcha import SliderCaptcha
+from crawlerstack_anticaptcha.slider_captcha.preprocessing import \
     ImagePreprocessing
 
 
