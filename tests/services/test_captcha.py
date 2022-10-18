@@ -7,8 +7,7 @@ from crawlerstack_anticaptcha.models import CategoryModel
 from crawlerstack_anticaptcha.repositories.respositorie import \
     CaptchaRepository
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
-from crawlerstack_anticaptcha.utils.exception import (ObjectDoesNotExist,
-                                                      SliderCaptchaParseFailed,
+from crawlerstack_anticaptcha.utils.exception import (SliderCaptchaParseFailed,
                                                       UnsupportedMediaType)
 from crawlerstack_anticaptcha.utils.upload_file import UploadedFile
 
@@ -56,26 +55,6 @@ async def test_written_to_db(mocker):
     create.assert_called_with()
 
 
-@pytest.mark.parametrize(
-    'category',
-    [
-        'test',
-        'SliderCaptcha'
-    ]
-)
-@pytest.mark.asyncio
-async def test_check_category(init_category, category, mocker):
-    """test check category"""
-    if category == 'SliderCaptcha':
-        captcha = CaptchaService('test', category, mocker.MagicMock())
-        result = await captcha.get_category()
-        assert result.id == 1
-    else:
-        captcha = CaptchaService(mocker.MagicMock(), category, mocker.MagicMock())
-        with pytest.raises(ObjectDoesNotExist):
-            await captcha.get_category()
-
-
 @pytest.mark.asyncio
 async def test_save_file(mocker, mock_path):
     """test save file"""
@@ -98,7 +77,7 @@ async def test_parse(mocker, parse_result, mock_path):
     """test parse"""
     write_to_db = mocker.patch.object(CaptchaService, 'write_to_db')
     test_file = mock_path / 'foo.jpg'
-    captcha_ser = CaptchaService(mocker.MagicMock(), 'test', b'1')
+    captcha_ser = CaptchaService(mocker.MagicMock(), 'SliderCaptcha', b'1')
     if parse_result == 0:
         mocker.patch.object(SliderCaptcha, 'parse', return_value=parse_result)
         captcha_ser.file_uuid = 'foo'

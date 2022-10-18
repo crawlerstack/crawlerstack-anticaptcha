@@ -55,7 +55,7 @@ category_table = op.create_table('category',)...
             {
                 "name": "RotatedCaptcha",
                 "path": str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('rotated-captcha')))
-            }
+            },
             {
                 "name": "NumericalCaptcha",
                 "path": str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('numerical_captcha')))

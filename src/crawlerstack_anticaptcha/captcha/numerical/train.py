@@ -11,60 +11,60 @@ from sklearn.svm import SVC
 
 from crawlerstack_anticaptcha.config import settings
 
-train_set_x = []
-train_set_y = []
+
+def create_captcha():
+    """create_captcha"""
+    session = requests.Session()
+    for _num in range(10):
+        img_url = 'http://run.hbut.edu.cn/Account/GetValidateCode?time=1644928431690'
+        print(img_url)
+        res = session.get(img_url)
+        timestamp = int(round(time.time() * 1000))
+        file = PurePath(settings.IMAGE_SAVE_PATH) / f"numerical-captcha/{timestamp}.jpg"
+        try:
+            with open(file, "ab") as f:
+                f.write(res.content)
+        except FileNotFoundError:
+            os.makedirs(file.parent)
+            with open(file, "ab") as f:
+                f.write(res.content)
 
 
 class NumericalModel:
     """NumericalModel"""
-    train_images_path = Path(settings.IMAGE_SAVE_PATH) / 'numerical-captcha/train'
-    model_path = Path('../models')
+    model_path = Path(__file__).parent.parent / 'models'
 
-    def __init__(self, image_list: list):
-        self.image_list = image_list
+    def __init__(self, image_path: Path):
+        self.image_path = image_path
         self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
-
-    @staticmethod
-    def create_captcha():
-        """create_captcha"""
-        session = requests.Session()
-        for _num in range(10):
-            img_url = 'http://run.hbut.edu.cn/Account/GetValidateCode?time=1644928431690'
-            print(img_url)
-            res = session.get(img_url)
-            timestamp = int(round(time.time() * 1000))
-            file = PurePath(settings.IMAGE_SAVE_PATH) / f"numerical-captcha/train/{timestamp}.jpg"
-            try:
-                with open(file, "ab") as f:
-                    f.write(res.content)
-            except FileNotFoundError:
-                os.makedirs(file.parent)
-                with open(file, "ab") as f:
-                    f.write(res.content)
 
     def train(self):
         """train"""
-        for category in self.train_images_path.iterdir():
-            if category.is_file():
+        samples = []
+        labels = []
+        for category_dir in self.image_path.iterdir():
+            if category_dir.is_file():
                 continue
-            for file in category.iterdir():
+            for file in category_dir.iterdir():
                 img = cv2.imread(str(file.resolve()), 0)
-                res = cv2.resize(img, (19, 23))
-                res_1 = res.reshape(140)
-                res_list = res_1.tolist()
-                train_set_x.append(res_list)
-                train_set_y.append(category.name)
-            letter_svm = SVC(kernel="linear", C=1).fit(train_set_x, train_set_y)
-            joblib.dump(letter_svm, self.model_path / 'numerical_captcha.pkl')
+                res = cv2.resize(img, (23, 19))
+                res = res.reshape(23 * 19)
+                res_list = res.tolist()
+                samples.append(res_list)
+                labels.append(category_dir.name)
+        letter_svm = SVC(kernel="linear", C=1).fit(samples, labels)
+        joblib.dump(letter_svm, self.model_path / 'numerical_captcha.pkl')
 
     def identify(self):
         """identify"""
         captcha = []
         clf = joblib.load(self.model_path / 'numerical_captcha.pkl')
-        for i in self.image_list:
+        for i in self.image_path.iterdir():
+            if not i.is_file():
+                continue
             img = cv2.imread(str(i.resolve()), 0)
-            img_resize = cv2.resize(img, (19, 23))
-            data = img_resize.reshape(140)
+            img_resize = cv2.resize(img, (23, 19))
+            data = img_resize.reshape(23 * 19)
             data = data.reshape(1, -1)
             num = clf.predict(data)[0]
             captcha.append(num)
