@@ -3,7 +3,7 @@ import logging
 import re
 from pathlib import Path
 
-from crawlerstack_anticaptcha.captcha.numerical import DdddOcr
+from crawlerstack_anticaptcha.captcha.numerical import NumCaptchaOcr
 from crawlerstack_anticaptcha.captcha.numerical.preprocessing import \
     Preprocessing
 from crawlerstack_anticaptcha.captcha.numerical.train import NumericalModel
@@ -53,7 +53,7 @@ class NumCaptcha:
         :return:
         """
         self.logger.debug('Use OCR identification.')
-        ocr = DdddOcr()
+        ocr = NumCaptchaOcr()
         res = ocr.classification(image)
         res = ''.join(re.findall(r'\d+', res))
         return res

@@ -20,8 +20,8 @@ def base64_to_image(img_base64):
     return Image.open(io.BytesIO(img_data))
 
 
-class DdddOcr(object):
-    """DdddOcr"""
+class NumCaptchaOcr(object):
+    """NumCaptchaOcr"""
 
     model_path = pathlib.Path(__file__).parent.parent / 'models'
 

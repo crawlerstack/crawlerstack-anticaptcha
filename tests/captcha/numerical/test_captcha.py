@@ -3,7 +3,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from crawlerstack_anticaptcha.captcha.numerical import DdddOcr
+from crawlerstack_anticaptcha.captcha.numerical import NumCaptchaOcr
 from crawlerstack_anticaptcha.captcha.numerical.captcha import NumCaptcha
 from crawlerstack_anticaptcha.captcha.numerical.preprocessing import \
     Preprocessing
@@ -59,6 +59,6 @@ def test_check(mocker: MockerFixture, code):
 def test_ocr_identification(mocker: MockerFixture):
     """test_ocr_identification"""
     num_captcha = NumCaptcha(mocker.MagicMock())
-    mocker.patch.object(DdddOcr, 'classification', return_value='1234.')
+    mocker.patch.object(NumCaptchaOcr, 'classification', return_value='1234.')
     result = num_captcha.ocr_identification(mocker.MagicMock())
     assert result == '1234'
