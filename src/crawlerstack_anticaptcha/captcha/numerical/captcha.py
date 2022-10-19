@@ -1,5 +1,6 @@
 """numerical captcha"""
 import logging
+import os
 import re
 from pathlib import Path
 
@@ -12,12 +13,14 @@ from crawlerstack_anticaptcha.config import settings
 
 class NumCaptcha:
     """Numerical Captcha"""
-    SLICE_DIR = Path(settings.IMAGE_SAVE_PATH) / 'numerical-captcha/char'
+    SLICE_DIR = Path(settings.IMAGE_SAVE_PATH) / 'numerical_captcha/char'
 
     def __init__(self, image_file: Path):
         self.image_file = image_file
         self.preprocess = Preprocessing(image_file)
         self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
+        if not self.SLICE_DIR.exists():
+            os.makedirs(self.SLICE_DIR)
 
     def parse(self):
         """parse"""

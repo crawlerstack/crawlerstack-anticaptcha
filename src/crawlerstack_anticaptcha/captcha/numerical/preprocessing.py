@@ -1,5 +1,6 @@
 """Preprocessing"""
 import logging
+import os
 from pathlib import Path
 
 import cv2
@@ -82,12 +83,12 @@ class Preprocessing:
             cv2.drawContours(self.image, [box], 0, (0, 0, 255), 2)
             roi = self.inv()[box[0][1]:box[3][1], box[0][0]:box[1][0]]
             resize_img = cv2.resize(roi, (23, 19))
-            # timestamp = str(time.time())
-            filepath = self.save_path / f'numerical-captcha/char/{tag}.jpg'
-            if filepath.parent.exists():
+            filepath = self.save_path / f'numerical_captcha/char/{tag}.jpg'
+            if not filepath.parent.exists():
+                os.makedirs(filepath.parent)
                 cv2.imwrite(str(filepath.resolve()), resize_img)
-            filepath.parent.mkdir(exist_ok=True)
-            cv2.imwrite(str(filepath.resolve()), resize_img)
+            else:
+                cv2.imwrite(str(filepath.resolve()), resize_img)
             tag += 1
 
     @staticmethod

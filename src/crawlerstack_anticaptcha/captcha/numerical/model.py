@@ -20,7 +20,7 @@ def create_captcha():
         print(img_url)
         res = session.get(img_url)
         timestamp = int(round(time.time() * 1000))
-        file = PurePath(settings.IMAGE_SAVE_PATH) / f"numerical-captcha/{timestamp}.jpg"
+        file = PurePath(settings.IMAGE_SAVE_PATH) / f"numerical_captcha/{timestamp}.jpg"
         try:
             with open(file, "ab") as f:
                 f.write(res.content)

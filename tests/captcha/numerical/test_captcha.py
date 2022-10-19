@@ -1,5 +1,4 @@
 """test numerical captcha"""
-
 import pytest
 from pytest_mock import MockerFixture
 
@@ -35,7 +34,7 @@ def test_parse(parsing_mode, mocker, mock_path):
             f.write(b'1')
         num_captcha = NumCaptcha(mock_path / 'foo.jpg')
         mocker.patch.object(NumericalModel, 'identify', return_value='1234')
-        mocker.patch.object(NumCaptcha,'ocr_identification',return_value='1234')
+        mocker.patch.object(NumCaptcha, 'ocr_identification', return_value='1234')
         result = num_captcha.parse()
         save_single_image.assert_called()
         assert result == '1234'
