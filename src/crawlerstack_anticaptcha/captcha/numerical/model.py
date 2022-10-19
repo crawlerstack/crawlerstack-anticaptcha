@@ -1,33 +1,10 @@
 """train"""
 import logging
-import os
-import time
-from pathlib import Path, PurePath
+from pathlib import Path
 
 import cv2
 import joblib
-import requests
 from sklearn.svm import SVC
-
-from crawlerstack_anticaptcha.config import settings
-
-
-def create_captcha():
-    """create_captcha"""
-    session = requests.Session()
-    for _num in range(10):
-        img_url = 'http://run.hbut.edu.cn/Account/GetValidateCode?time=1644928431690'
-        print(img_url)
-        res = session.get(img_url)
-        timestamp = int(round(time.time() * 1000))
-        file = PurePath(settings.IMAGE_SAVE_PATH) / f"numerical_captcha/{timestamp}.jpg"
-        try:
-            with open(file, "ab") as f:
-                f.write(res.content)
-        except FileNotFoundError:
-            os.makedirs(file.parent)
-            with open(file, "ab") as f:
-                f.write(res.content)
 
 
 class NumericalModel:
