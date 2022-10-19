@@ -1,9 +1,9 @@
 """test numerical captcha"""
 
 import pytest
-from ddddocr import DdddOcr
 from pytest_mock import MockerFixture
 
+from crawlerstack_anticaptcha.captcha.numerical import DdddOcr
 from crawlerstack_anticaptcha.captcha.numerical.captcha import NumCaptcha
 from crawlerstack_anticaptcha.captcha.numerical.preprocessing import \
     Preprocessing

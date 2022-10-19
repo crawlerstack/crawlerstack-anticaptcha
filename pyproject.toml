@@ -54,10 +54,14 @@ good-names = [
     "y"
 ]
 
-max-line-length = 110
+max-line-length = 120
 
 ignore = ["versions", 'demo.py']
 
-[tool.pytest.ini_options]
+[tool.pylint.MASTER]
+ignore-paths = [
+    'src/crawlerstack_anticaptcha/captcha/numerical/__init__.py',
+]
 
+[tool.pytest.ini_options]
 asyncio_mode = "auto"
