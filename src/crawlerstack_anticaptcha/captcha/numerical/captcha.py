@@ -4,12 +4,10 @@ import re
 from pathlib import Path
 
 from crawlerstack_anticaptcha.captcha.numerical import NumCaptchaOcr
+from crawlerstack_anticaptcha.captcha.numerical.model import NumericalModel
 from crawlerstack_anticaptcha.captcha.numerical.preprocessing import \
     Preprocessing
-from crawlerstack_anticaptcha.captcha.numerical.train import NumericalModel
 from crawlerstack_anticaptcha.config import settings
-from crawlerstack_anticaptcha.utils.exception import \
-    NumericalCaptchaParseFailed
 
 
 class NumCaptcha:
@@ -26,14 +24,13 @@ class NumCaptcha:
         self.preprocess.save_single_image()
         numerical_model = NumericalModel(self.SLICE_DIR)
         result = numerical_model.identify()
-        if not self.check(result):
-            with open(self.image_file, 'rb') as f:
-                image = f.read()
-            ocr_result = self.ocr_identification(image)
-            if ocr_result:
-                return ocr_result
-            raise NumericalCaptchaParseFailed()
-        return result
+        with open(self.image_file, 'rb') as f:
+            image = f.read()
+        ocr_result = self.ocr_identification(image)
+        if result == ocr_result:
+            return result
+        self.logger.info('The ocr identification result is %s.', ocr_result)
+        return ocr_result
 
     def check(self, code: str):
         """
@@ -54,6 +51,10 @@ class NumCaptcha:
         """
         self.logger.debug('Use OCR identification.')
         ocr = NumCaptchaOcr()
-        res = ocr.classification(image)
-        res = ''.join(re.findall(r'\d+', res))
-        return res
+        try:
+            res = ocr.classification(image)
+            res = ''.join(re.findall(r'\d+', res))
+            return res
+        except Exception as exc:  # pylint:disable=broad-except
+            self.logger.debug(exc)
+            return None

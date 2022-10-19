@@ -6,7 +6,8 @@ from crawlerstack_anticaptcha.captcha.numerical.captcha import NumCaptcha
 from crawlerstack_anticaptcha.captcha.slider.captcha import SliderCaptcha
 from crawlerstack_anticaptcha.repositories.respositorie import \
     CaptchaRepository
-from crawlerstack_anticaptcha.utils.exception import SliderCaptchaParseFailed
+from crawlerstack_anticaptcha.utils.exception import (
+    NumericalCaptchaParseFailed, SliderCaptchaParseFailed)
 
 
 class SliderCaptchaService:
@@ -45,15 +46,15 @@ class NumericalCaptchaService:
 
     async def parse(self):
         """parse"""
-        image_captcha = NumCaptcha(self.file)
-        res = image_captcha.parse()
-        if res == 0:
+        num_captcha = NumCaptcha(self.file)
+        res = num_captcha.parse()
+        if len(res) < 4 or res is None:
             await self.captcha_repository.create(
                 file_id=self.file_uuid, category_id=self.captcha_id,
                 file_type=str(self.file).split('.')[1],
                 success=False
             )
-            raise SliderCaptchaParseFailed()
+            raise NumericalCaptchaParseFailed()
         return res
 
 

@@ -69,5 +69,5 @@ class NumericalModel:
             num = clf.predict(data)[0]
             captcha.append(num)
         captcha = ''.join(map(str, captcha))
-        self.logger.info('The captcha result is %s', captcha)
+        self.logger.info('The model identification result is %s.', captcha)
         return captcha

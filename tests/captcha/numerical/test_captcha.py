@@ -5,9 +5,9 @@ from pytest_mock import MockerFixture
 
 from crawlerstack_anticaptcha.captcha.numerical import NumCaptchaOcr
 from crawlerstack_anticaptcha.captcha.numerical.captcha import NumCaptcha
+from crawlerstack_anticaptcha.captcha.numerical.model import NumericalModel
 from crawlerstack_anticaptcha.captcha.numerical.preprocessing import \
     Preprocessing
-from crawlerstack_anticaptcha.captcha.numerical.train import NumericalModel
 
 
 @pytest.mark.parametrize(
@@ -35,6 +35,7 @@ def test_parse(parsing_mode, mocker, mock_path):
             f.write(b'1')
         num_captcha = NumCaptcha(mock_path / 'foo.jpg')
         mocker.patch.object(NumericalModel, 'identify', return_value='1234')
+        mocker.patch.object(NumCaptcha,'ocr_identification',return_value='1234')
         result = num_captcha.parse()
         save_single_image.assert_called()
         assert result == '1234'

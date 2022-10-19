@@ -40,4 +40,4 @@ class NumericalCaptchaParseFailed(CrawlerStackAnticaptcha):
     """
 
     def __init__(self):
-        self.content = 'Parse failed.'
+        self.content = 'Parsing failed, please upload again.'
