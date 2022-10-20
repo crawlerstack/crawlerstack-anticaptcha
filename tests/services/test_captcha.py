@@ -4,8 +4,8 @@ import pytest
 
 from crawlerstack_anticaptcha.captcha.slider.captcha import SliderCaptcha
 from crawlerstack_anticaptcha.models import CategoryModel
-from crawlerstack_anticaptcha.repositories.respositorie import \
-    CaptchaRepository
+from crawlerstack_anticaptcha.repositories.respositorie import (
+    CaptchaRepository, CategoryRepository)
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
 from crawlerstack_anticaptcha.utils.exception import (SliderCaptchaParseFailed,
                                                       UnsupportedMediaType)
@@ -92,3 +92,12 @@ async def test_parse(mocker, parse_result, mock_path):
     if parse_result == 1:
         mocker.patch.object(SliderCaptcha, 'parse', return_value=parse_result)
         assert await captcha_ser.parse(test_file, 1) == 1
+
+
+@pytest.mark.asyncio
+async def test_get_category(mocker):
+    """test get category"""
+    captcha_ser = CaptchaService(mocker.MagicMock(), 'SliderCaptcha', b'1')
+    mocker.patch.object(CategoryRepository, 'get_by_name', return_value='foo')
+    result = await captcha_ser.get_category()
+    assert result == 'foo'
