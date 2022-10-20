@@ -22,49 +22,7 @@ docker compose up
 
 ### 数据库迁移（使用alembic）
 
-生成本地初始化脚本
-
-```bash
-alembic revision -m "init_db"
-```
-
-更新数据库版本
-
-```bash
-alembic upgrade head
-```
-
-生成迁移代码
-
-```bash
-alembic revision --autogenerate -m "init_table"
-```
-
-其中需要初始化写入的数据需手动补充
-
-```
-category_table = op.create_table('category',)...
-...
-    op.bulk_insert(
-        category_table,
-        [
-            {
-                "name": "SliderCaptcha",
-                "path": str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('slider-captcha')))
-            },
-            {
-                "name": "RotatedCaptcha",
-                "path": str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('rotated-captcha')))
-            },
-            {
-                "name": "NumericalCaptcha",
-                "path": str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('numerical_captcha')))
-            }
-        ]
-    )
-```
-
-最后执行升级`upgrade`命令将数据库升级到最新
+根据迁移脚本，将数据库升级到最新
 
 ```bash
 alembic upgrade head
