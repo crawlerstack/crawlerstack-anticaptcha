@@ -94,11 +94,15 @@ async def init_category_fixture(session, settings):
         categories = [
             CategoryModel(
                 name='SliderCaptcha',
-                path=str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('slider-captcha')))
+                path=str(Path(settings.CAPTCHA_IMAGE_PATH) / 'slider_captcha')
             ),
             CategoryModel(
                 name='RotatedCaptcha',
-                path=str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('rotated-captcha')))
+                path=str(Path(settings.CAPTCHA_IMAGE_PATH) / 'rotated_captcha')
+            ),
+            CategoryModel(
+                name='NumericalCaptcha',
+                path=str(Path(settings.CAPTCHA_IMAGE_PATH) / 'numerical_captcha')
             )
         ]
         session.add_all(categories)

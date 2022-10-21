@@ -7,7 +7,7 @@ from crawlerstack_anticaptcha.models import CategoryModel
 from crawlerstack_anticaptcha.repositories.respositorie import (
     CaptchaRepository, CategoryRepository)
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
-from crawlerstack_anticaptcha.utils.exception import (SliderCaptchaParseFailed,
+from crawlerstack_anticaptcha.utils.exception import (CaptchaParseFailed,
                                                       UnsupportedMediaType)
 from crawlerstack_anticaptcha.utils.upload_file import UploadedFile
 
@@ -50,7 +50,9 @@ async def test_check(mocker, file_type):
 async def test_written_to_db(mocker):
     """test written_to_db"""
     create = mocker.patch.object(CaptchaRepository, 'create')
-    captcha_service = CaptchaService('test', 'foo', mocker.MagicMock())
+    captcha_service = CaptchaService(
+        mocker.MagicMock(content_type='test'), 'foo', mocker.MagicMock()
+    )
     await captcha_service.write_to_db()
     create.assert_called_with()
 
@@ -81,7 +83,7 @@ async def test_parse(mocker, parse_result, mock_path):
     if parse_result == 0:
         mocker.patch.object(SliderCaptcha, 'parse', return_value=parse_result)
         captcha_ser.file_uuid = 'foo'
-        with pytest.raises(SliderCaptchaParseFailed):
+        with pytest.raises(CaptchaParseFailed):
             await captcha_ser.parse(test_file, 1)
             write_to_db.assert_called_with(
                 {'category_id': 1,

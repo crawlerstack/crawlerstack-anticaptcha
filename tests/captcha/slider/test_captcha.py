@@ -23,18 +23,28 @@ def test_parse(mocker):
     'length',
     [
         1,
-        0
+        0,
+        -1
     ]
 )
 def test_canny_detection(mocker, length):
     """test canny_detection"""
     image_captcha = SliderCaptcha(mocker.MagicMock())
-    if length:
+    if length == 1:
         image_captcha.check = mocker.MagicMock(return_value=length)
         assert image_captcha.canny_detection() == 1
-    else:
+    if length == 0:
         mocker.patch.object(ImagePreprocessing, 'thresholding_black')
         mocker.patch.object(cv2, 'Canny')
         image_captcha.check = mocker.MagicMock(return_value=length)
         result = image_captcha.canny_detection()
         assert result == 0
+    if length == -1:
+        mocker.patch.object(cv2, 'Canny')
+        image_captcha.check = mocker.MagicMock(return_value=length)
+        result = image_captcha.canny_detection()
+        assert result == 0
+
+
+def test_check(mocker):
+    """test check"""

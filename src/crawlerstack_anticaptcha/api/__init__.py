@@ -3,9 +3,9 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 
 from crawlerstack_anticaptcha.api.rest_api import app
-from crawlerstack_anticaptcha.utils.exception import (
-    NumericalCaptchaParseFailed, ObjectDoesNotExist, SliderCaptchaParseFailed,
-    UnsupportedMediaType)
+from crawlerstack_anticaptcha.utils.exception import (CaptchaParseFailed,
+                                                      ObjectDoesNotExist,
+                                                      UnsupportedMediaType)
 from crawlerstack_anticaptcha.utils.schema import Message
 
 
@@ -53,32 +53,10 @@ async def unsupported_type_exception_handler(
     )
 
 
-@app.exception_handler(SliderCaptchaParseFailed)
-async def parsing_failed_exception_handler(
-        _: Request,
-        exc: SliderCaptchaParseFailed
-):
-    """
-    parsing failed exception handler
-    :param _:
-    :param exc:
-    :return:
-    """
-    result = Message(
-        code=422,
-        data=None,
-        message=exc.content
-    )
-    return JSONResponse(
-        status_code=422,
-        content=result.dict()
-    )
-
-
-@app.exception_handler(NumericalCaptchaParseFailed)
+@app.exception_handler(CaptchaParseFailed)
 async def numerical_parse_failed_exception_handler(
         _: Request,
-        exc: NumericalCaptchaParseFailed
+        exc: CaptchaParseFailed
 ):
     """
     numerical_parse_failed_exception_handler

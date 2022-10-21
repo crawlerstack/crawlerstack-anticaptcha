@@ -1,27 +1,13 @@
 # -*- coding:utf-8 -*-
 """Preprocessing"""
-import logging
-from pathlib import Path
 
 import cv2
 
+from crawlerstack_anticaptcha.utils.base_image import BasePreprocessing
 
-class ImagePreprocessing:
+
+class ImagePreprocessing(BasePreprocessing):
     """ImagePreprocessing"""
-
-    def __init__(self, img_file: Path):
-        self.img_file = str(img_file.resolve())
-        self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
-
-    @property
-    def image(self):
-        """
-        加载图片
-        read_file
-        :return:
-        """
-        img = cv2.imread(self.img_file, 0)
-        return img
 
     def thresholding_white(self):
         """

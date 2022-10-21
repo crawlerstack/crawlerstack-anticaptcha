@@ -12,7 +12,7 @@ logger = logging.getLogger(f'{__name__}  {__name__}')
 app = FastAPI()
 
 
-@app.get('/crawlerstack/category/query/')
+@app.get('/crawlerstack/category/')
 async def get_category():
     """Query captcha category list"""
     category = CategoryService()

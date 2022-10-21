@@ -4,28 +4,29 @@ import os
 import re
 from pathlib import Path
 
-from crawlerstack_anticaptcha.captcha.numerical import NumCaptchaOcr
+import ddddocr
+
 from crawlerstack_anticaptcha.captcha.numerical.model import NumericalModel
 from crawlerstack_anticaptcha.captcha.numerical.preprocessing import \
     Preprocessing
 from crawlerstack_anticaptcha.config import settings
 
 
-class NumCaptcha:
+class NumericalCaptcha:
     """Numerical Captcha"""
-    SLICE_DIR = Path(settings.IMAGE_SAVE_PATH) / 'numerical_captcha/char'
+    image_split_path = Path(settings.CAPTCHA_IMAGE_PATH) / 'numerical_captcha/char'
 
     def __init__(self, image_file: Path):
         self.image_file = image_file
         self.preprocess = Preprocessing(image_file)
         self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
-        if not self.SLICE_DIR.exists():
-            os.makedirs(self.SLICE_DIR)
+        if not self.image_split_path.exists():
+            os.makedirs(self.image_split_path)
 
     def parse(self):
         """parse"""
         self.preprocess.save_single_image()
-        numerical_model = NumericalModel(self.SLICE_DIR)
+        numerical_model = NumericalModel(self.image_split_path)
         result = numerical_model.identify()
         with open(self.image_file, 'rb') as f:
             image = f.read()
@@ -53,11 +54,7 @@ class NumCaptcha:
         :return:
         """
         self.logger.debug('Use OCR identification.')
-        ocr = NumCaptchaOcr()
-        try:
-            res = ocr.classification(image)
-            res = ''.join(re.findall(r'\d+', res))
-            return res
-        except Exception as exc:  # pylint:disable=broad-except
-            self.logger.debug(exc)
-            return None
+        ocr = ddddocr.DdddOcr(show_ad=False)
+        res = ocr.classification(image)
+        res = ''.join(re.findall(r'\d+', res))
+        return res

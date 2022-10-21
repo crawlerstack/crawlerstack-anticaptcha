@@ -1,9 +1,9 @@
 """test numerical captcha"""
 import pytest
+from ddddocr import DdddOcr
 from pytest_mock import MockerFixture
 
-from crawlerstack_anticaptcha.captcha.numerical import NumCaptchaOcr
-from crawlerstack_anticaptcha.captcha.numerical.captcha import NumCaptcha
+from crawlerstack_anticaptcha.captcha.numerical.captcha import NumericalCaptcha
 from crawlerstack_anticaptcha.captcha.numerical.model import NumericalModel
 from crawlerstack_anticaptcha.captcha.numerical.preprocessing import \
     Preprocessing
@@ -20,11 +20,11 @@ def test_parse(parsing_mode, mocker, mock_path):
     """test parse"""
     save_single_image = mocker.patch.object(Preprocessing, 'save_single_image')
     if parsing_mode == 'ocr':
-        mocker.patch.object(NumCaptcha, 'ocr_identification', return_value='1')
+        mocker.patch.object(NumericalCaptcha, 'ocr_identification', return_value='1')
         identify = mocker.patch.object(NumericalModel, 'identify')
         with open(mock_path / 'foo.jpg', 'ab') as f:
             f.write(b'1')
-        num_captcha = NumCaptcha(mock_path / 'foo.jpg')
+        num_captcha = NumericalCaptcha(mock_path / 'foo.jpg')
         result = num_captcha.parse()
         save_single_image.assert_called()
         identify.assert_called()
@@ -32,9 +32,9 @@ def test_parse(parsing_mode, mocker, mock_path):
     else:
         with open(mock_path / 'foo.jpg', 'ab') as f:
             f.write(b'1')
-        num_captcha = NumCaptcha(mock_path / 'foo.jpg')
+        num_captcha = NumericalCaptcha(mock_path / 'foo.jpg')
         mocker.patch.object(NumericalModel, 'identify', return_value='1234')
-        mocker.patch.object(NumCaptcha, 'ocr_identification', return_value='1234')
+        mocker.patch.object(NumericalCaptcha, 'ocr_identification', return_value='1234')
         result = num_captcha.parse()
         save_single_image.assert_called()
         assert result == '1234'
@@ -49,7 +49,7 @@ def test_parse(parsing_mode, mocker, mock_path):
 )
 def test_check(mocker: MockerFixture, code):
     """test check"""
-    num_captcha = NumCaptcha(mocker.MagicMock())
+    num_captcha = NumericalCaptcha(mocker.MagicMock())
     if code == '123':
         assert not num_captcha.check(code)
     if code == '1234':
@@ -58,7 +58,7 @@ def test_check(mocker: MockerFixture, code):
 
 def test_ocr_identification(mocker: MockerFixture):
     """test_ocr_identification"""
-    num_captcha = NumCaptcha(mocker.MagicMock())
-    mocker.patch.object(NumCaptchaOcr, 'classification', return_value='1234.')
+    num_captcha = NumericalCaptcha(mocker.MagicMock())
+    mocker.patch.object(DdddOcr, 'classification', return_value='1234.')
     result = num_captcha.ocr_identification(mocker.MagicMock())
     assert result == '1234'

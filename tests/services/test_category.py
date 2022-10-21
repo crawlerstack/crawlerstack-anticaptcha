@@ -12,6 +12,10 @@ async def test_query_category(init_category):
     result = await category.get_all()
     assert result == Message(
         code=200,
-        data=[{'id': 1, 'name': 'SliderCaptcha'}, {'id': 2, 'name': 'RotatedCaptcha'}],
+        data=[
+            {'id': 1, 'name': 'SliderCaptcha'},
+            {'id': 2, 'name': 'RotatedCaptcha'},
+            {'id': 3, 'name': 'NumericalCaptcha'}
+        ],
         message='The identified captcha category can be provided.'
     )

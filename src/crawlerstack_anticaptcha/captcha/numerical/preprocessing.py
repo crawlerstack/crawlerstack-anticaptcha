@@ -1,12 +1,10 @@
 """Preprocessing"""
-import logging
 import os
-from pathlib import Path
 
 import cv2
 import numpy as np
 
-from crawlerstack_anticaptcha.config import settings
+from crawlerstack_anticaptcha.utils.base_image import BasePreprocessing
 
 
 def take_first(elem):
@@ -14,22 +12,8 @@ def take_first(elem):
     return elem[0][0]
 
 
-class Preprocessing:
+class Preprocessing(BasePreprocessing):
     """preprocessing"""
-    save_path = Path(settings.IMAGE_SAVE_PATH)
-
-    def __init__(self, image: Path):
-        self.img = str(image.resolve())
-        self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
-
-    @property
-    def image(self):
-        """
-        对图像转灰度读取
-        :return:
-        """
-        _img = cv2.imread(self.img, 0)
-        return _img
 
     def blur(self):
         """
@@ -45,7 +29,6 @@ class Preprocessing:
         :return:
         """
         _ret, thresh = cv2.threshold(self.blur(), 150, 255, cv2.THRESH_BINARY)
-
         return thresh
 
     def contours(self):
@@ -83,7 +66,7 @@ class Preprocessing:
             cv2.drawContours(self.image, [box], 0, (0, 0, 255), 2)
             roi = self.inv()[box[0][1]:box[3][1], box[0][0]:box[1][0]]
             resize_img = cv2.resize(roi, (23, 19))
-            filepath = self.save_path / f'numerical_captcha/char/{tag}.jpg'
+            filepath = self.captcha_image_path / f'numerical_captcha/split/{tag}.jpg'
             if not filepath.parent.exists():
                 os.makedirs(filepath.parent)
                 cv2.imwrite(str(filepath.resolve()), resize_img)
@@ -91,13 +74,13 @@ class Preprocessing:
                 cv2.imwrite(str(filepath.resolve()), resize_img)
             tag += 1
 
-    @staticmethod
-    def show_img(image):
-        """
-        show image
-        :param image:
-        :return:
-        """
-        cv2.imshow('img', image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+    # @staticmethod
+    # def show_img(image):
+    #     """
+    #     show image
+    #     :param image:
+    #     :return:
+    #     """
+    #     cv2.imshow('img', image)
+    #     cv2.waitKey(0)
+    #     cv2.destroyAllWindows()

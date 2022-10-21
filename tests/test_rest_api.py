@@ -10,13 +10,14 @@ from crawlerstack_anticaptcha.utils.schema import Message
 
 def test_get_category(client, init_category):
     """test get category"""
-    response = client.get('/crawlerstack/category/query/')
+    response = client.get('/crawlerstack/category/')
     assert response.status_code == 200
     assert response.json() == {
         "code": 200,
         "data": [
-            {"id": 1, "name": "SliderCaptcha"},
-            {"id": 2, "name": "RotatedCaptcha"}
+            {'id': 1, 'name': 'SliderCaptcha'},
+            {'id': 2, 'name': 'RotatedCaptcha'},
+            {'id': 3, 'name': 'NumericalCaptcha'}
         ],
         "message": "The identified captcha category can be provided."
     }
