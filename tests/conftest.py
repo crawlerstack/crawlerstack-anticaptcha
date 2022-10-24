@@ -1,5 +1,6 @@
 """Test config"""
 import asyncio
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -51,6 +52,9 @@ def migrate_fixture(settings):
 
     async def setup():
         """setup"""
+        db_path = Path(settings.DATABASE_URL.split('///')[1]).parent
+        if not db_path.exists():
+            os.makedirs(db_path)
         _engine: AsyncEngine = create_async_engine(settings.DATABASE_URL)
         async with _engine.begin() as conn:
             await conn.run_sync(BaseModel.metadata.drop_all)
