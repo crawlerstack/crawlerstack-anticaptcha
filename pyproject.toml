@@ -71,3 +71,8 @@ ignore-paths = [
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+
+[tool.coverage.run]
+omit = [
+    "src/crawlerstack_anticaptcha/alembic/*"
+]
