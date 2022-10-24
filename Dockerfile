@@ -12,8 +12,6 @@ COPY . ./
 
 RUN poetry build
 
-# use playwright build image, and special playwright version.
-# You should update it when update project to use.
 FROM python:3.10
 
 WORKDIR /app
@@ -23,7 +21,7 @@ COPY --from=0 /app/dist /app/dist
 RUN python -m pip install -U pip \
     && pip install --no-cache-dir /app/dist/*.whl
 
-EXPOSE 8080
+EXPOSE 8000
 
 ENTRYPOINT ["crawlerstack_anticaptcha"]
 CMD ["api","-p","8000"]

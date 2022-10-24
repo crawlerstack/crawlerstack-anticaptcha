@@ -1,5 +1,6 @@
 """Test config"""
 import asyncio
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -51,6 +52,9 @@ def migrate_fixture(settings):
 
     async def setup():
         """setup"""
+        db_path = Path(settings.DATABASE_URL.split('///')[1]).parent
+        if not db_path.exists():
+            os.makedirs(db_path)
         _engine: AsyncEngine = create_async_engine(settings.DATABASE_URL)
         async with _engine.begin() as conn:
             await conn.run_sync(BaseModel.metadata.drop_all)
@@ -94,11 +98,15 @@ async def init_category_fixture(session, settings):
         categories = [
             CategoryModel(
                 name='SliderCaptcha',
-                path=str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('slider-captcha')))
+                path=str(Path(settings.CAPTCHA_IMAGE_PATH) / 'slider_captcha')
             ),
             CategoryModel(
                 name='RotatedCaptcha',
-                path=str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('rotated-captcha')))
+                path=str(Path(settings.CAPTCHA_IMAGE_PATH) / 'rotated_captcha')
+            ),
+            CategoryModel(
+                name='NumericalCaptcha',
+                path=str(Path(settings.CAPTCHA_IMAGE_PATH) / 'numerical_captcha')
             )
         ]
         session.add_all(categories)

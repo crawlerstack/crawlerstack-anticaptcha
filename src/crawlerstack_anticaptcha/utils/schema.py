@@ -1,4 +1,5 @@
 """Schema"""
+from enum import Enum
 
 from pydantic import BaseModel  # pylint:disable=no-name-in-module
 
@@ -13,5 +14,12 @@ class MessageData(BaseModel):
 class Message(BaseModel):
     """Message"""
     code: int
-    data: MessageData | None = None
+    data: MessageData | list = None
     message: str
+
+
+class Captcha(Enum):
+    """SliderCategory"""
+    Slider = 'SliderCaptcha'
+    Numerical = 'NumericalCaptcha'
+    Rotated = 'RotatedCaptcha'

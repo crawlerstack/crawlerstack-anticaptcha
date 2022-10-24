@@ -1,25 +1,24 @@
 """log"""
 import os
 from logging.config import dictConfig
+from pathlib import Path
 
 from crawlerstack_anticaptcha.config import settings
 
 
-def mkdir(path):
+def mkdir(log_path: Path):
     """
     mkdir
-    :param path:
+    :param log_path:
     :return:
     """
-    folder = os.path.exists(path)
-
-    if not folder:
-        os.makedirs(path)
+    if not log_path.exists():
+        os.makedirs(log_path)
 
 
 def init_log():
     """Init log"""
-    mkdir(fr'{settings.LOG_PATH}/log')
+    mkdir(Path(settings.LOG_PATH))
     default_logging = {
         "version": 1,
         "disable_existing_loggers": False,
@@ -41,7 +40,7 @@ def init_log():
                 'class': 'logging.handlers.RotatingFileHandler',
                 'level': 'DEBUG',
                 'formatter': 'verbose',
-                'filename': os.path.join(settings.LOG_PATH, 'log', 'all.log'),
+                'filename': os.path.join(settings.LOG_PATH, 'all.log'),
                 'maxBytes': 1024 * 1024 * 1024 * 200,  # 200M
                 'backupCount': '5',
                 'encoding': 'utf-8'

@@ -1,4 +1,4 @@
 # sql database config.
-database_url: sqlite+aiosqlite:////tmp/test_captcha.db
+database_url: sqlite+aiosqlite:////tmp/crawlerstack/anticaptcha/db.sqlite
 
 show_sql: true
