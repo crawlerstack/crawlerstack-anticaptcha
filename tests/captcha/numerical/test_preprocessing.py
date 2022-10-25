@@ -32,7 +32,3 @@ def test_contours(mocker):
     mocker.patch.object(Preprocessing, 'inv', return_value=1)
     mocker.patch.object(cv2, 'findContours', return_value=(1, 2))
     assert preprocessing.contours() == 1
-
-
-def test_crop_image(mocker):
-    """test crop image"""
