@@ -2,37 +2,10 @@
 import uvicorn
 
 from crawlerstack_anticaptcha.api.rest_api import start
-from crawlerstack_anticaptcha.repositories.respositorie import \
-    CaptchaRepository
+from crawlerstack_anticaptcha.repositories.record import \
+    CaptchaRecordRepository
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
 from crawlerstack_anticaptcha.utils.schema import Message
-
-
-def test_get_category(client, init_category):
-    """test get category"""
-    response = client.get('/crawlerstack/category/')
-    assert response.status_code == 200
-    assert response.json() == {
-        "code": 200,
-        "data": [
-            {'id': 1, 'name': 'SliderCaptcha'},
-            {'id': 2, 'name': 'RotatedCaptcha'},
-            {'id': 3, 'name': 'NumericalCaptcha'}
-        ],
-        "message": "The identified captcha category can be provided."
-    }
-
-
-def test_receive_parse_results(mocker, client):
-    """test receive parse results"""
-    payload = {"success": False}
-    update = mocker.patch.object(CaptchaRepository, 'update_by_file_id')
-    response = client.put(
-        '/crawlerstack/captcha/record/123',
-        data=payload
-    )
-    assert response.status_code == 200
-    update.assert_called_with('123', False)
 
 
 def test_anticaptcha(mocker, client, mock_path):
@@ -41,14 +14,29 @@ def test_anticaptcha(mocker, client, mock_path):
     with open(mock_path / 'foo.png', 'wb') as f:
         f.write(bytes(1))
     with open(mock_path / 'foo.png', 'rb') as f:
-        files = {'file': f.read()}
+        files = {'image': f.read()}
         response = client.post(
-            '/crawlerstack/captcha/identify/',
+            '/v1/api/captcha/identify/',
             files=files,
             data={'category': 'SliderCaptcha'}
         )
         assert response.status_code == 200
         assert response.json() == {'code': 20, 'data': None, 'message': 'test'}
+
+
+def test_record(mocker, client):
+    """test record"""
+    payload = {"success": False}
+    update = mocker.patch.object(CaptchaRecordRepository, 'update_by_pk')
+    response = client.put(
+        '/v1/api/captcha/record/123',
+        data=payload
+    )
+    assert response.status_code == 200
+    update.assert_called_with('123', False)
+    assert response.json() == {
+        'code': 200, 'data': None,
+        'message': 'Update file id is the "success"=False of "123".'}
 
 
 def test_start(mocker):

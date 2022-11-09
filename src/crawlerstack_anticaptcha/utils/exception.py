@@ -30,5 +30,5 @@ class CaptchaParseFailed(CrawlerStackAnticaptcha):
     CaptchaParseFailed
     """
 
-    def __init__(self):
-        self.content = 'Parsing failed, please upload again.'
+    def __init__(self, content='Parsing failed, please upload again.'):
+        self.content = content

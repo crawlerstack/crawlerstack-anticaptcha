@@ -1,22 +1,21 @@
 """Test config"""
 import asyncio
 import os
+from datetime import datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
                                     create_async_engine)
 from sqlalchemy.orm import sessionmaker
 
 from crawlerstack_anticaptcha import config
-from crawlerstack_anticaptcha.api import app
-from crawlerstack_anticaptcha.models import (BaseModel, CaptchaModel,
-                                             CategoryModel)
-from crawlerstack_anticaptcha.repositories.respositorie import (
-    CaptchaRepository, CategoryRepository)
+from crawlerstack_anticaptcha.api.rest_api import app
+from crawlerstack_anticaptcha.models import (BaseModel, CaptchaCategoryModel,
+                                             CaptchaRecordModel, StorageModel)
+from crawlerstack_anticaptcha.repositories.category import CategoryRepository
 
 
 @pytest.fixture(name='settings')
@@ -42,7 +41,7 @@ def category_repository_fixture():
 @pytest.fixture(name='captcha_repository')
 def captcha_repository_fixture():
     """captcha repository fixture"""
-    captcha_repository = CaptchaRepository()
+    captcha_repository = CategoryRepository()
     yield captcha_repository
 
 
@@ -96,35 +95,37 @@ async def init_category_fixture(session, settings):
     """init Category table data"""
     async with session.begin():
         categories = [
-            CategoryModel(
-                name='SliderCaptcha',
-                path=str(Path(settings.CAPTCHA_IMAGE_PATH) / 'slider_captcha')
-            ),
-            CategoryModel(
-                name='RotatedCaptcha',
-                path=str(Path(settings.CAPTCHA_IMAGE_PATH) / 'rotated_captcha')
-            ),
-            CategoryModel(
-                name='NumericalCaptcha',
-                path=str(Path(settings.CAPTCHA_IMAGE_PATH) / 'numerical_captcha')
+            CaptchaCategoryModel(
+                name='test',
+                create_time=datetime(2022, 1, 1)
             )
         ]
         session.add_all(categories)
 
 
-@pytest.fixture(name='init_captcha')
-async def init_captcha_fixture(session, init_category):
-    """init captcha table data"""
+@pytest.fixture(name='init_record')
+async def init_record_fixture(session, settings):
+    """init Category table data"""
     async with session.begin():
-        result = await session.scalars(select(CategoryModel))
-        objs = result.all()
-        captchas = [
-            CaptchaModel(
-                file_id='foo',
-                category_id=objs[0].id,
-            ),
+        records = [
+            CaptchaRecordModel(category_id=1, create_time=datetime(2022, 1, 1), result='foo')
         ]
-        session.add_all(captchas)
+        session.add_all(records)
+
+
+@pytest.fixture(name='init_storage')
+async def init_storage_fixture(session, settings):
+    """init_storage"""
+    async with session.begin():
+        storages = [
+            StorageModel(
+                name='test',
+                uri='foo',
+                default=True,
+                create_time=datetime(2022, 1, 1)
+            )
+        ]
+        session.add_all(storages)
 
 
 @pytest.fixture(name='client')

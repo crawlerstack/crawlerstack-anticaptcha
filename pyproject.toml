@@ -44,7 +44,12 @@ crawlerstack_anticaptcha = 'crawlerstack_anticaptcha.cmdline:main'
 [tool.pylint.main]
 ignored-modules = ["cv2", "alembic.context", "alembic.op"]
 
-disable = ["too-few-public-methods", "unused-argument"]
+disable = [
+    "too-few-public-methods",
+    "unused-argument",
+    "too-many-arguments",
+    "too-many-instance-attributes",
+]
 
 good-names = [
     "pk",

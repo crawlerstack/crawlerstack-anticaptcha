@@ -66,7 +66,7 @@ class Preprocessing(BasePreprocessing):
             cv2.drawContours(self.image, [box], 0, (0, 0, 255), 2)
             roi = self.inv()[box[0][1]:box[3][1], box[0][0]:box[1][0]]
             resize_img = cv2.resize(roi, (23, 19))
-            filepath = self.captcha_image_path / f'numerical_captcha/split/{tag}.jpg'
+            filepath = self.captcha_image_path / f'numerical-captcha/split/{tag}.jpg'
             if not filepath.parent.exists():
                 os.makedirs(filepath.parent)
                 cv2.imwrite(str(filepath.resolve()), resize_img)

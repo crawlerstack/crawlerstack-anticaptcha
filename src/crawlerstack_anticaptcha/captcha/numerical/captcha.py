@@ -14,7 +14,7 @@ from crawlerstack_anticaptcha.config import settings
 
 class NumericalCaptcha:
     """Numerical Captcha"""
-    image_split_path = Path(settings.CAPTCHA_IMAGE_PATH) / 'numerical_captcha/char'
+    image_split_path = Path(settings.CAPTCHA_IMAGE_PATH) / 'numerical-captcha/char'
 
     def __init__(self, image_file: Path):
         self.image_file = image_file
