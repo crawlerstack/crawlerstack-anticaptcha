@@ -29,7 +29,6 @@ class CategoryService:
         """create"""
         await self.category_repository.create(
             name=self.name,
-            create_time=self.now
         )
         return Message(
             code=200,

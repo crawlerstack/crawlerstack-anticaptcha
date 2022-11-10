@@ -1,5 +1,4 @@
 """StorageRepository"""
-from datetime import datetime
 
 from sqlalchemy.future import select
 
@@ -33,7 +32,6 @@ class StorageRepository(BaseRepository):
                 if obj is None:
                     raise ObjectDoesNotExist(f'Can not find object by id="{storage_id}".')
                 obj.default = default
-                obj.update_time = datetime.now()
                 self.logger.info('Update %s', obj)
 
     async def get_default(self):
@@ -41,6 +39,4 @@ class StorageRepository(BaseRepository):
         stmt = select(self.model).where(bool(self.model.default) is True)
         async with async_session() as session:
             result = await session.scalar(stmt)
-            if result is None:
-                raise ObjectDoesNotExist('No default configuration found available')
             return result

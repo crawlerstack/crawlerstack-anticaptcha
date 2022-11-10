@@ -29,7 +29,3 @@ async def test_get_default(init_storage):
     storage = StorageRepository()
     result = await storage.get_default()
     assert result.name == 'test'
-
-    await storage.delete_by_id(1)
-    with pytest.raises(ObjectDoesNotExist):
-        await storage.get_default()

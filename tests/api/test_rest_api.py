@@ -16,7 +16,7 @@ def test_anticaptcha(mocker, client, mock_path):
     with open(mock_path / 'foo.png', 'rb') as f:
         files = {'image': f.read()}
         response = client.post(
-            '/v1/api/captcha/identify/',
+            '/api/v1/captcha/identify/',
             files=files,
             data={'category': 'SliderCaptcha'}
         )
@@ -29,7 +29,7 @@ def test_record(mocker, client):
     payload = {"success": False}
     update = mocker.patch.object(CaptchaRecordRepository, 'update_by_pk')
     response = client.put(
-        '/v1/api/captcha/record/123',
+        '/api/v1/captcha/record/123',
         data=payload
     )
     assert response.status_code == 200

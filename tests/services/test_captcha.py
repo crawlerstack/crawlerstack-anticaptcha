@@ -1,5 +1,4 @@
 """Test Captcha Service"""
-import datetime
 from pathlib import Path
 
 import pytest
@@ -7,9 +6,6 @@ from fastapi import File
 
 from crawlerstack_anticaptcha.captcha.slider.captcha import SliderCaptcha
 from crawlerstack_anticaptcha.models import StorageModel
-from crawlerstack_anticaptcha.repositories.file import CaptchaFileRepository
-from crawlerstack_anticaptcha.repositories.record import \
-    CaptchaRecordRepository
 from crawlerstack_anticaptcha.repositories.storage import StorageRepository
 from crawlerstack_anticaptcha.services.captcha import (CaptchaService,
                                                        storage_default)
@@ -48,25 +44,12 @@ async def test_check_category(mocker):
     captcha = CaptchaService(image=image, category=Captcha.Slider.value)
     captcha.file_uuid = 'test'
     res = await captcha.check_category('foo', mocker.MagicMock(return_vaule=File(), content_type='image/jpg'))
-    assert res == Path('foo/slider-captcha/test.jpg')
+    assert res == Path('foo/test.jpg')
 
     captcha = CaptchaService(image=image, category=Captcha.Numerical.value)
     captcha.file_uuid = 'test'
     res = await captcha.check_category('foo', mocker.MagicMock(return_vaule=File(), content_type='image/jpg'))
-    assert res == Path('foo/numerical-captcha/test.jpg')
-
-
-@pytest.mark.asyncio
-async def test_written_to_db(mocker):
-    """test written_to_db"""
-    mocker.patch.object(CaptchaRecordRepository, 'create', return_value=1)
-    file_create = mocker.patch.object(CaptchaFileRepository, 'create')
-    image = mocker.MagicMock(return_value=File)
-    captcha = CaptchaService(image=image, category=Captcha.Slider.value)
-    captcha.now = datetime.datetime(2022, 1, 1)
-    res = await captcha.write_to_db(1, 'foo', None, 'res', 'foo', 1)
-    file_create.assert_called()
-    assert res == 1
+    assert res == Path('foo/test.jpg')
 
 
 @pytest.mark.asyncio

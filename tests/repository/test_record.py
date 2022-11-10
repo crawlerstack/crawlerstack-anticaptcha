@@ -1,9 +1,10 @@
 """test CaptchaRecordRepository"""
 import logging
-from datetime import datetime
 
 import pytest
 
+from crawlerstack_anticaptcha.models import (CaptchaFileModel,
+                                             CaptchaRecordModel)
 from crawlerstack_anticaptcha.repositories.record import \
     CaptchaRecordRepository
 from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
@@ -15,13 +16,11 @@ async def test_create_record(caplog):
     record_repository = CaptchaRecordRepository()
     caplog.set_level(logging.DEBUG)
     result = await record_repository.create_record(
-        category_id=1,
-        result=100,
-        success=True,
-        create_time=datetime(2022, 1, 1)
+        CaptchaRecordModel(category_id=1, result=1),
+        [CaptchaFileModel(filename='test', file_type='foo', storage_id=1)]
     )
     assert 'Create' in caplog.text
-    assert result == 1
+    assert result.id == 1
 
 
 @pytest.mark.asyncio

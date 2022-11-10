@@ -23,10 +23,3 @@ class Captcha(Enum):
     Slider = 'SliderCaptcha'
     Numerical = 'NumericalCaptcha'
     Rotated = 'RotatedCaptcha'
-
-
-class CaptchaPath(Enum):
-    """CaptchaPath"""
-    Slider = 'slider-captcha'
-    Numerical = 'numerical-captcha'
-    Rotated = 'rotated-captcha'

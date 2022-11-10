@@ -22,7 +22,6 @@ class StorageService:
             uri=self.uri,
             name=self.name,
             default=self.default,
-            create_time=self.now
         )
         return Message(
             code=200,

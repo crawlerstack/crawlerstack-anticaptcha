@@ -1,5 +1,4 @@
 """CategoryRepository"""
-from datetime import datetime
 
 from sqlalchemy.future import select
 
@@ -46,5 +45,4 @@ class CategoryRepository(BaseRepository):
                 if obj is None:  # pylint: disable=duplicate-code
                     raise ObjectDoesNotExist(f'Can not find object by id="{pk}"')
                 obj.name = name
-                obj.update_time = datetime.now()
                 self.logger.debug('Update %s', obj)

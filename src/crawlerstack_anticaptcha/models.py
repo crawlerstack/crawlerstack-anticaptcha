@@ -17,7 +17,7 @@ class CaptchaCategoryModel(BaseModel):
     id = Column(Integer, primary_key=True)
     # category_id = Column(Integer, primary_key=True, comment='Captcha category id')
     name = Column(String(255), unique=True)
-    update_time = Column(DateTime, default=None, comment='Update time')
+    update_time = Column(DateTime, onupdate=datetime.now(), default=datetime.now(), comment='Update time')
     create_time = Column(DateTime, default=datetime.now(), comment='Create time')
 
     def __repr__(self):
@@ -36,7 +36,7 @@ class StorageModel(BaseModel):
     uri = Column(String(255), comment='Save the location.')
     name = Column(String(255), comment='Name of storage mode.')
     default = Column(Boolean, comment='Default opening mode.')
-    update_time = Column(DateTime, default=None, comment='Update time.')
+    update_time = Column(DateTime, onupdate=datetime.now(), default=datetime.now(), comment='Update time.')
     create_time = Column(DateTime, default=datetime.now(), comment='Create time.')
 
 
@@ -53,7 +53,7 @@ class CaptchaRecordModel(BaseModel):
     result = Column(String(255), comment='Identification result.')
     success = Column(Boolean, default=None, comment='Whether the parsing was successful.')
     deleted = Column(Boolean, default=False, comment='Delete status.')
-    update_time = Column(DateTime, default=None, comment='Update time.')
+    update_time = Column(DateTime, onupdate=datetime.now(), default=datetime.now(), comment='Update time.')
     create_time = Column(DateTime, default=datetime.now(), comment='Create time.')
 
 
@@ -69,6 +69,6 @@ class CaptchaFileModel(BaseModel):
     filename = Column(String(255), comment='Id generated from filename.')
     file_type = Column(String(255), comment='Image file type.')
     storage_id = Column(ForeignKey('storage.id'), comment='Storage mode id.')
-    file_mark = Column(String(255), comment='Image mark.(foreground or background image)')
-    update_time = Column(DateTime, default=None, comment='Update time.')
+    file_mark = Column(String(255), default=None, comment='Image mark.(foreground or background image)')
+    update_time = Column(DateTime, onupdate=datetime.now(), default=datetime.now(), comment='Update time.')
     create_time = Column(DateTime, default=datetime.now(), comment='Create time.')
