@@ -10,16 +10,6 @@ from crawlerstack_anticaptcha.repositories.storage import StorageRepository
 from crawlerstack_anticaptcha.services.captcha import (CaptchaService,
                                                        storage_default)
 from crawlerstack_anticaptcha.utils.schema import Captcha
-from crawlerstack_anticaptcha.utils.upload_file import UploadedFile
-
-
-@pytest.mark.asyncio
-async def test_save(mocker, mock_path):
-    """test save file"""
-    save = mocker.patch.object(UploadedFile, 'save')
-    test_file = mock_path / 'foo.jpg'
-    await save(b'1', test_file)
-    save.assert_called_with(b'1', mock_path / 'foo.jpg')
 
 
 @pytest.mark.asyncio
