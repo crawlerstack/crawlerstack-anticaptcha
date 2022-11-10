@@ -12,11 +12,10 @@ from crawlerstack_anticaptcha.utils.schema import Message
 @pytest.mark.asyncio
 async def test_create(mocker):
     """test create"""
-    create = mocker.patch.object(StorageRepository, 'create')
+    mocker.patch.object(StorageRepository, 'create', return_value=StorageModel(uri='foo', name='test', default=True))
     storage = StorageService(storage_id=1, name='foo', uri='test')
     storage.now = datetime.datetime(2022, 1, 1, 1, 1)
     result = await storage.create()
-    create.assert_called()
     assert result.code == 200
 
 
