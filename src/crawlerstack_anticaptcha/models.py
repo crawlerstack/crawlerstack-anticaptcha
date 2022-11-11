@@ -35,7 +35,7 @@ class StorageModel(BaseModel):
     id = Column(Integer, primary_key=True)
     uri = Column(String(255), comment='Save the location.')
     name = Column(String(255), comment='Name of storage mode.')
-    default = Column(Boolean, comment='Default opening mode.')
+    default = Column(Boolean, default=False, comment='Default opening mode.')
     update_time = Column(DateTime, onupdate=datetime.now, default=datetime.now, comment='Update time.')
     create_time = Column(DateTime, default=datetime.now, comment='Create time.')
 
