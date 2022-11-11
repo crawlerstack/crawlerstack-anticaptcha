@@ -11,18 +11,15 @@ class CaptchaParser(metaclass=SingletonMeta):
     """Captcha"""
     captcha_funcs = {'NumericalCaptcha': NumericalCaptcha}
 
-    def __init__(self, category: str, background_image: Path, fore_image: Path = None, extra_content: str = None):
+    def __init__(self, category: str):
         self.category = category
-        self.background_image = background_image
-        self.fore_image = fore_image
-        self.extra_content = extra_content
 
-    def factory(self):
+    def factory(self, background_image: Path, fore_image: Path, extra_content: str):
         """factory"""
         captcha_instance = self.captcha_funcs.get(self.category)(
-            background_image=self.background_image,
-            fore_image=self.fore_image,
-            extra_content=self.extra_content
+            background_image=background_image,
+            fore_image=fore_image,
+            extra_content=extra_content
         )
         parse_result = captcha_instance.parse()
         return parse_result

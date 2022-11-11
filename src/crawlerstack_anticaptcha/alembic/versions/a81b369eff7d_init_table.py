@@ -1,12 +1,11 @@
 """init_table
 
-Revision ID: 7d723f3cbb59
+Revision ID: a81b369eff7d
 Revises: 1f9068250d7b
-Create Date: 2022-11-09 09:35:51.405880
+Create Date: 2022-11-11 16:54:34.287607
 
 """
-from datetime import datetime
-from pathlib import Path
+import datetime
 
 import sqlalchemy as sa
 from alembic import op
@@ -14,10 +13,12 @@ from alembic import op
 # revision identifiers, used by Alembic.
 from crawlerstack_anticaptcha.config import settings
 
-revision = '7d723f3cbb59'
+revision = 'a81b369eff7d'
 down_revision = '1f9068250d7b'
 branch_labels = None
 depends_on = None
+
+current_date = datetime.datetime(2022, 11, 11, 16, 54, 34)
 
 
 def upgrade() -> None:
@@ -70,7 +71,9 @@ def upgrade() -> None:
         [
             {
                 'name': 'NumericalCaptcha',
-                'create_time': datetime.now()
+                'id': 1001,
+                'update_time': '2022-11-11 16:54:34',
+                'create_time': '2022-11-11 16:54:34'
             }
         ]
     )
@@ -81,7 +84,8 @@ def upgrade() -> None:
                 'name': 'local',
                 'uri': settings.CAPTCHA_IMAGE_PATH,
                 'default': True,
-                'create_time': datetime.now()
+                'update_time': '2022-11-11 16:54:34',
+                'create_time': '2022-11-11 16:54:34'
             }
         ]
     )

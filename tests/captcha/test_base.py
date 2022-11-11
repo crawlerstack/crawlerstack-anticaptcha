@@ -15,7 +15,7 @@ def test_parse(mock_path):
 
 def test_captcha_factory(mocker, mock_path):
     """test captcha factory"""
-    captcha = CaptchaParser('NumericalCaptcha', mock_path / 'foo')
+    captcha = CaptchaParser('NumericalCaptcha')
     mocker.patch.object(NumericalCaptcha, 'parse', return_value='foo')
-    res = captcha.factory()
+    res = captcha.factory(mock_path / 'foo', None, None)
     assert res == 'foo'
