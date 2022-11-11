@@ -122,37 +122,41 @@ docker compose up
 
 生成本地初始化脚本
 
-```base
+```bash
 alembic revision -m "init_db"
 ```
 
 更新数据库版本
 
-```base
-alembic upgrade head 
+```bash
+alembic upgrade head
 ```
 
 生成迁移代码
 
-```base
+```bash
 alembic revision --autogenerate -m "init_table"
 ```
 
 其中需要初始化写入的数据需手动补充
 
-```base
+```
 category_table = op.create_table('category',)...
 ...
-    op.bulk_insert(
+op.bulk_insert(
         category_table,
         [
             {
                 "name": "SliderCaptcha",
-                "path": str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('slider-captcha')))
+                "path": str(Path(settings.CAPTCHA_IMAGE_PATH) / 'slider-captcha')
             },
             {
                 "name": "RotatedCaptcha",
-                "path": str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('rotated-captcha')))
+                "path": str(Path(settings.CAPTCHA_IMAGE_PATH) / 'rotated-captcha')
+            },
+            {
+                "name": "NumericalCaptcha",
+                "path": str(Path(settings.CAPTCHA_IMAGE_PATH) / 'numerical_captcha')
             }
         ]
     )
@@ -160,6 +164,6 @@ category_table = op.create_table('category',)...
 
 最后执行升级`upgrade`命令将数据库升级到最新
 
-```base
-alembic upgrade head 
+```bash
+alembic upgrade head
 ```

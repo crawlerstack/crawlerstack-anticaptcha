@@ -1,21 +1,23 @@
 """Test config"""
 import asyncio
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import pytest
+from click.testing import CliRunner
 from fastapi.testclient import TestClient
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
                                     create_async_engine)
 from sqlalchemy.orm import sessionmaker
 
 from crawlerstack_anticaptcha import config
-from crawlerstack_anticaptcha.api import app
-from crawlerstack_anticaptcha.models import (BaseModel, CaptchaModel,
-                                             CategoryModel)
-from crawlerstack_anticaptcha.repositories.respositorie import (
-    CaptchaRepository, CategoryRepository)
+from crawlerstack_anticaptcha.api.rest_api import app
+from crawlerstack_anticaptcha.models import (BaseModel, CaptchaCategoryModel,
+                                             CaptchaFileModel,
+                                             CaptchaRecordModel, StorageModel)
+from crawlerstack_anticaptcha.repositories.category import CategoryRepository
+from crawlerstack_anticaptcha.repositories.storage import StorageRepository
 
 
 @pytest.fixture(name='settings')
@@ -31,6 +33,12 @@ def mock_path() -> Path:
         yield Path(temp_path)
 
 
+@pytest.fixture()
+def clicker():
+    """clicker fixture"""
+    yield CliRunner()
+
+
 @pytest.fixture(name='category_repository')
 def category_repository_fixture():
     """category repository fixture"""
@@ -41,8 +49,15 @@ def category_repository_fixture():
 @pytest.fixture(name='captcha_repository')
 def captcha_repository_fixture():
     """captcha repository fixture"""
-    captcha_repository = CaptchaRepository()
+    captcha_repository = CategoryRepository()
     yield captcha_repository
+
+
+@pytest.fixture(name='storage_repository')
+def storage_repository_fixture():
+    """captcha_file_repository_fixture"""
+    storage_repository = StorageRepository()
+    yield storage_repository
 
 
 @pytest.fixture(autouse=True, name='migrate')
@@ -51,6 +66,9 @@ def migrate_fixture(settings):
 
     async def setup():
         """setup"""
+        db_path = Path(settings.DATABASE_URL.split('///')[1]).parent
+        if not db_path.exists():
+            os.makedirs(db_path)
         _engine: AsyncEngine = create_async_engine(settings.DATABASE_URL)
         async with _engine.begin() as conn:
             await conn.run_sync(BaseModel.metadata.drop_all)
@@ -92,31 +110,55 @@ async def init_category_fixture(session, settings):
     """init Category table data"""
     async with session.begin():
         categories = [
-            CategoryModel(
-                name='SliderCaptcha',
-                path=str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('slider-captcha')))
-            ),
-            CategoryModel(
-                name='RotatedCaptcha',
-                path=str(Path(settings.IMAGE_SAVE_PATH).joinpath(Path('rotated-captcha')))
+            CaptchaCategoryModel(
+                name='test',
             )
         ]
         session.add_all(categories)
 
 
-@pytest.fixture(name='init_captcha')
-async def init_captcha_fixture(session, init_category):
-    """init captcha table data"""
+@pytest.fixture(name='init_record')
+async def init_record_fixture(session, settings):
+    """init Category table data"""
     async with session.begin():
-        result = await session.scalars(select(CategoryModel))
-        objs = result.all()
-        captchas = [
-            CaptchaModel(
-                file_id='foo',
-                category_id=objs[0].id,
+        records = [
+            CaptchaRecordModel(category_id=1, result='foo')
+        ]
+        session.add_all(records)
+
+
+@pytest.fixture(name='init_storage')
+async def init_storage_fixture(session, settings):
+    """init_storage"""
+    async with session.begin():
+        storages = [
+            StorageModel(
+                name='local',
+                uri='foo',
+            )
+        ]
+        session.add_all(storages)
+
+
+@pytest.fixture(name='init_file_record')
+async def init_file_record_fixture(session, settings):
+    """init_file_record"""
+    async with session.begin():
+        files = [
+            CaptchaFileModel(
+                record_id=1,
+                filename='foo',
+                file_type='foo',
+                storage_id=1,
+            ),
+            CaptchaFileModel(
+                record_id=1,
+                filename='bar',
+                file_type='foo',
+                storage_id=1,
             ),
         ]
-        session.add_all(captchas)
+        session.add_all(files)
 
 
 @pytest.fixture(name='client')

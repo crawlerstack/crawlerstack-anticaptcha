@@ -1,13 +1,13 @@
 # The directory where the uploaded files are saved
-image_save_path: /tmp/captcha-service
-
+captcha_image_path: /tmp/crawlerstack/anticaptcha/images
 
 # log config
-log_path: /tmp/captcha-service/
+log_path: /tmp/crawlerstack/anticaptcha/log
 log_level: INFO
 
 # sql database config.
-database_url: sqlite+aiosqlite:////tmp/captcha_database.db
-#database_url: mysql+aiomysql://root:123qweasd@localhost:3306/test
+database_url: sqlite+aiosqlite:////tmp/crawlerstack/anticaptcha/db.sqlite
 
 show_sql: false
+
+tesseract_cmd_path:

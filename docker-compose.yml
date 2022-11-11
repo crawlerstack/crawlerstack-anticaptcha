@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.7"
 services:
   app:
     build: .
@@ -8,22 +8,7 @@ services:
       - "5000:8000"
     networks:
       - app
-      - db
-
-#  mysql:
-#    image: mysql
-#    networks:
-#      - db
-#    hostname: mysql
-#    environment:
-#      MYSQL_ROOT_PASSWORD: "123"
-#      MYSQL_DATABASE: test
-#    ports:
-#      - "3307:3306"
 
 networks:
-  db:
-    external: true
   app:
     external: true
-
