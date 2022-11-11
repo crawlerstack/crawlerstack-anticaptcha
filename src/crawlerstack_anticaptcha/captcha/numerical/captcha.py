@@ -14,11 +14,11 @@ class NumericalCaptcha(BaseCaptcha):
 
     def parse(self):
         """parse"""
-        preprocess = Preprocessing(self.image)
+        preprocess = Preprocessing(self.background_image)
         preprocess.save_single_image()
         numerical_model = NumericalModel(self.image_split_path)
         result = numerical_model.identify()
-        with open(self.image, 'rb') as f:
+        with open(self.background_image, 'rb') as f:
             image = f.read()
         ocr_result = self.ocr_identification(image)
         if result == ocr_result:

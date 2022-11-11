@@ -1,29 +1,21 @@
 """Captcha Service"""
 import logging
 import uuid
-from pathlib import Path, PurePath
+from pathlib import PurePath
 
 from fastapi import File
 
-from crawlerstack_anticaptcha.captcha import captcha_factory
+from crawlerstack_anticaptcha.captcha import CaptchaParser
 from crawlerstack_anticaptcha.models import (CaptchaFileModel,
-                                             CaptchaRecordModel, StorageModel)
+                                             CaptchaRecordModel)
 from crawlerstack_anticaptcha.repositories.category import CategoryRepository
 from crawlerstack_anticaptcha.repositories.file import CaptchaFileRepository
 from crawlerstack_anticaptcha.repositories.record import \
     CaptchaRecordRepository
-from crawlerstack_anticaptcha.repositories.storage import StorageRepository
-from crawlerstack_anticaptcha.storages import StorageFactory
+from crawlerstack_anticaptcha.storages import Storage
 from crawlerstack_anticaptcha.utils.exception import (CaptchaParseFailed,
                                                       UnsupportedMediaType)
 from crawlerstack_anticaptcha.utils.schema import Message, MessageData
-
-
-async def storage_default() -> StorageModel:
-    """获取存储配置"""
-    storage = StorageRepository()
-    default = await storage.get_default()
-    return default
 
 
 class CaptchaService:
@@ -31,7 +23,7 @@ class CaptchaService:
     category_repository = CategoryRepository()
     record_repository = CaptchaRecordRepository()
     file_repository = CaptchaFileRepository()
-    storage = StorageFactory()
+    storage = Storage()
 
     def __init__(self, image: File, category: str, fore_image: File = None, extra_content: str = None):
         self.image: File() = image
@@ -50,7 +42,8 @@ class CaptchaService:
             if self.fore_image is None:
                 file = await self.storage.factory(await self.image.read(), self.file_uuid,
                                                   PurePath(self.image.content_type).stem)
-                parse_result = await self.parse(file.get('file'))
+                captcha = CaptchaParser(self.category, file.get('file'))
+                parse_result = captcha.factory()
                 if parse_result:
                     record = await self.record_repository.create_record(
                         CaptchaRecordModel(category_id=category.id, result=parse_result),
@@ -76,10 +69,3 @@ class CaptchaService:
             raise UnsupportedMediaType(
                 'The upload file format is incorrect, please upload the correct image type.'
             )
-
-    async def parse(self, file: Path):
-        """parse"""
-        result = captcha_factory(self.category, file)
-        if result:
-            return result
-        return False

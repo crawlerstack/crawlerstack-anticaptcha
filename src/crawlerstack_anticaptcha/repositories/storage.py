@@ -34,9 +34,29 @@ class StorageRepository(BaseRepository):
                 obj.default = default
                 self.logger.info('Update %s', obj)
 
-    async def get_default(self):
-        """get default"""
+    async def init_default(self):
+        """init default"""
         stmt = select(self.model).where(bool(self.model.default) is True)
         async with async_session() as session:
-            result = await session.scalar(stmt)
-            return result
+            async with session.begin():
+                result = await session.scalars(stmt)
+                for i in result.all():
+                    i.default = False
+
+    async def get_by_name(self, storage_name: str):
+        """get_by_name"""
+        stmt = select(self.model).where(self.model.name == storage_name)
+        async with async_session() as session:
+            res = await session.scalar(stmt)
+            return res
+
+    async def update_by_name(self, name: str):
+        """update_by_name"""
+        stmt = select(self.model).where(self.model.name == name)
+        async with async_session() as session:
+            async with session.begin():
+                obj = await session.scalar(stmt)
+                if obj is None:
+                    raise ObjectDoesNotExist(f'Can not find object by id="{name}".')
+                obj.default = True
+                self.logger.info('Update %s', obj)

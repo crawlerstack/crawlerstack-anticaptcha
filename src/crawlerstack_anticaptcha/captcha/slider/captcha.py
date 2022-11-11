@@ -18,7 +18,7 @@ class SliderCaptcha(BaseCaptcha):
 
     def canny_detection(self):
         """canny detection"""
-        preprocessing = ImagePreprocessing(self.image)
+        preprocessing = ImagePreprocessing(self.background_image)
         edge = cv2.Canny(preprocessing.thresholding_white(), 30, 80)
         length = self.check(edge)
         if length > 0:

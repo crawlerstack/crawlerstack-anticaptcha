@@ -18,6 +18,7 @@ from crawlerstack_anticaptcha.models import (BaseModel, CaptchaCategoryModel,
                                              CaptchaRecordModel, StorageModel)
 from crawlerstack_anticaptcha.repositories.category import CategoryRepository
 from crawlerstack_anticaptcha.repositories.file import CaptchaFileRepository
+from crawlerstack_anticaptcha.repositories.storage import StorageRepository
 
 
 @pytest.fixture(name='settings')
@@ -51,6 +52,13 @@ def captcha_repository_fixture():
     """captcha repository fixture"""
     captcha_repository = CategoryRepository()
     yield captcha_repository
+
+
+@pytest.fixture(name='storage_repository')
+def storage_repository_fixture():
+    """captcha_file_repository_fixture"""
+    storage_repository = StorageRepository()
+    yield storage_repository
 
 
 @pytest.fixture(name='captcha_file_repository')
@@ -133,9 +141,8 @@ async def init_storage_fixture(session, settings):
     async with session.begin():
         storages = [
             StorageModel(
-                name='test',
+                name='local',
                 uri='foo',
-                default=True,
             )
         ]
         session.add_all(storages)

@@ -1,4 +1,4 @@
-"""Test cracker"""
+"""Test SliderCaptcha"""
 import cv2
 import pytest
 
@@ -44,7 +44,3 @@ def test_canny_detection(mocker, length):
         image_captcha.check = mocker.MagicMock(return_value=length)
         result = image_captcha.canny_detection()
         assert result == 0
-
-
-def test_check(mocker):
-    """test check"""
