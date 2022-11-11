@@ -1,6 +1,5 @@
 """test local"""
 import logging
-import os
 
 import pytest
 
@@ -17,12 +16,13 @@ async def test_save(mock_path, mocker):
     assert result == mock_path / 'foo.png'
     write_to_file.assert_called_with(mock_path / 'foo.png', b'1')
 
+
+@pytest.mark.asyncio
+async def test_save_not_found(mock_path):
+    """test_save_not_found"""
     local = LocalStorages(StorageModel(uri=str(mock_path / 'test')))
-    makedir = mocker.patch.object(os, 'makedirs')
     result = await local.save('foo', 'png', b'1')
     assert result == mock_path / 'test/foo.png'
-    makedir.asssert_called_with()
-    write_to_file.assert_called_with(mock_path / 'test/foo.png', b'1')
 
 
 def test_write_to_file(mocker, mock_path, caplog):

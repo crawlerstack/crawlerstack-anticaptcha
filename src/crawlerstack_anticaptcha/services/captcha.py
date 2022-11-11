@@ -9,7 +9,6 @@ from crawlerstack_anticaptcha.captcha import CaptchaParser
 from crawlerstack_anticaptcha.models import (CaptchaFileModel,
                                              CaptchaRecordModel)
 from crawlerstack_anticaptcha.repositories.category import CategoryRepository
-from crawlerstack_anticaptcha.repositories.file import CaptchaFileRepository
 from crawlerstack_anticaptcha.repositories.record import \
     CaptchaRecordRepository
 from crawlerstack_anticaptcha.storages import Storage
@@ -22,7 +21,6 @@ class CaptchaService:
     """CaptchaService"""
     category_repository = CategoryRepository()
     record_repository = CaptchaRecordRepository()
-    file_repository = CaptchaFileRepository()
     storage = Storage()
 
     def __init__(self, image: File, category: str, fore_image: File = None, extra_content: str = None):
