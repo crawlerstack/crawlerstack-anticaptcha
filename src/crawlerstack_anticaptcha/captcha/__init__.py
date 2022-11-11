@@ -1,4 +1,5 @@
 """BaseCaptcha"""
+
 from pathlib import Path
 
 from crawlerstack_anticaptcha.captcha.numerical.captcha import NumericalCaptcha
@@ -13,10 +14,7 @@ def captcha_factory(category: str, file: Path):
     :param category:
     :return:
     """
-    if category == Captcha.Slider.value:
-        image_captcha = SliderCaptcha(file)
-        return image_captcha
+    captcha_instance = None
     if category == Captcha.Numerical.value:
-        num_captcha = NumericalCaptcha(file)
-        return num_captcha
-    return None
+        captcha_instance = NumericalCaptcha(file)
+    return captcha_instance.parse()

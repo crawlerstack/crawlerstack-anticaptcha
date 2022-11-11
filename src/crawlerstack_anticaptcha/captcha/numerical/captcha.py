@@ -1,34 +1,24 @@
 """numerical captcha"""
-import logging
-import os
 import re
-from pathlib import Path
 
 import ddddocr
 
+from crawlerstack_anticaptcha.captcha.base import BaseCaptcha
 from crawlerstack_anticaptcha.captcha.numerical.model import NumericalModel
 from crawlerstack_anticaptcha.captcha.numerical.preprocessing import \
     Preprocessing
-from crawlerstack_anticaptcha.config import settings
 
 
-class NumericalCaptcha:
+class NumericalCaptcha(BaseCaptcha):
     """Numerical Captcha"""
-    image_split_path = Path(settings.CAPTCHA_IMAGE_PATH) / 'numerical-captcha/char'
-
-    def __init__(self, image_file: Path):
-        self.image_file = image_file
-        self.preprocess = Preprocessing(image_file)
-        self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
-        if not self.image_split_path.exists():
-            os.makedirs(self.image_split_path)
 
     def parse(self):
         """parse"""
-        self.preprocess.save_single_image()
+        preprocess = Preprocessing(self.image)
+        preprocess.save_single_image()
         numerical_model = NumericalModel(self.image_split_path)
         result = numerical_model.identify()
-        with open(self.image_file, 'rb') as f:
+        with open(self.image, 'rb') as f:
             image = f.read()
         ocr_result = self.ocr_identification(image)
         if result == ocr_result:

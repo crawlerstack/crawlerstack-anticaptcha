@@ -1,19 +1,14 @@
 """slider captcha"""
-import logging
-from pathlib import Path
 
 import cv2
 
+from crawlerstack_anticaptcha.captcha.base import BaseCaptcha
 from crawlerstack_anticaptcha.captcha.slider.preprocessing import \
     ImagePreprocessing
 
 
-class SliderCaptcha:
+class SliderCaptcha(BaseCaptcha):
     """SliderCaptchaChecker"""
-
-    def __init__(self, image_file: Path):
-        self.preprocessing = ImagePreprocessing(image_file)
-        self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
 
     def parse(self):
         """parse"""
@@ -23,12 +18,13 @@ class SliderCaptcha:
 
     def canny_detection(self):
         """canny detection"""
-        edge = cv2.Canny(self.preprocessing.thresholding_white(), 30, 80)
+        preprocessing = ImagePreprocessing(self.image)
+        edge = cv2.Canny(preprocessing.thresholding_white(), 30, 80)
         length = self.check(edge)
         if length > 0:
             return length
         if length == 0:
-            edge = cv2.Canny(self.preprocessing.thresholding_black(), 30, 80)
+            edge = cv2.Canny(preprocessing.thresholding_black(), 30, 80)
             length = self.check(edge)
             return length
         return length == 0

@@ -1,29 +1,12 @@
 """test factory"""
 
-import pytest
-
 from crawlerstack_anticaptcha.captcha import captcha_factory
 from crawlerstack_anticaptcha.captcha.numerical.captcha import NumericalCaptcha
-from crawlerstack_anticaptcha.captcha.slider.captcha import SliderCaptcha
 
 
-@pytest.mark.parametrize(
-    'category',
-    [
-        'SliderCaptcha',
-        'NumericalCaptcha',
-        'test'
-    ]
-)
-def test_factory(mocker, category):
+def test_factory(mocker):
     """test factory"""
     test_file = mocker.MagicMock()
-    if category == 'SliderCaptcha':
-        result = captcha_factory(category, test_file)
-        assert isinstance(result, SliderCaptcha)
-    if category == 'NumericalCaptcha':
-        result = captcha_factory(category, test_file)
-        assert isinstance(result, NumericalCaptcha)
-    if category == 'test':
-        result = captcha_factory(category, test_file)
-        assert result is None
+    mocker.patch.object(NumericalCaptcha, 'parse', return_value=1)
+    result = captcha_factory('NumericalCaptcha', test_file)
+    assert result == 1

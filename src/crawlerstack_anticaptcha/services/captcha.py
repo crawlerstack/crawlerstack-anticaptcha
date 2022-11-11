@@ -16,7 +16,7 @@ from crawlerstack_anticaptcha.repositories.storage import StorageRepository
 from crawlerstack_anticaptcha.storages import StorageFactory
 from crawlerstack_anticaptcha.utils.exception import (CaptchaParseFailed,
                                                       UnsupportedMediaType)
-from crawlerstack_anticaptcha.utils.schema import Captcha, Message, MessageData
+from crawlerstack_anticaptcha.utils.schema import Message, MessageData
 
 
 async def storage_default() -> StorageModel:
@@ -77,17 +77,9 @@ class CaptchaService:
                 'The upload file format is incorrect, please upload the correct image type.'
             )
 
-    async def check_category(self, path: str, file: File()) -> Path:
-        """check category"""
-        if self.category == Captcha.Slider.value:
-            return Path(path) / f'{self.file_uuid}.{PurePath(file.content_type).stem}'
-        if self.category == Captcha.Numerical.value:
-            return Path(path) / f'{self.file_uuid}.{PurePath(file.content_type).stem}'
-
     async def parse(self, file: Path):
         """parse"""
-        captcha_service = captcha_factory(self.category, file)
-        result = captcha_service.parse()
+        result = captcha_factory(self.category, file)
         if result:
             return result
         return False

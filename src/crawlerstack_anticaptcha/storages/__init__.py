@@ -34,7 +34,7 @@ class StorageFactory(metaclass=SingletonMeta):
         self.name = storage_name
         self.storage = None
 
-    async def default(self) -> StorageModel:
+    async def default(self):
         """获取存储配置"""
         if not self.storage:
             storage = StorageRepository()

@@ -5,6 +5,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import pytest
+from click.testing import CliRunner
 from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
                                     create_async_engine)
@@ -30,6 +31,12 @@ def mock_path() -> Path:
     """Mock a path, and clean when unit test done."""
     with TemporaryDirectory() as temp_path:
         yield Path(temp_path)
+
+
+@pytest.fixture()
+def clicker():
+    """clicker fixture"""
+    yield CliRunner()
 
 
 @pytest.fixture(name='category_repository')
