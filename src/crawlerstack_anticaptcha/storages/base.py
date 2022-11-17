@@ -24,4 +24,5 @@ class BaseStorage:
         :param file_type:
         :return:
         """
-        return Path(self.storage.uri) / f'{name}.{file_type}'
+        local_save_path = self.storage.uri.split('://')[1]
+        return Path(local_save_path) / f'{name}.{file_type}'

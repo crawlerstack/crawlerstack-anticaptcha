@@ -21,8 +21,7 @@ class CaptchaCategoryModel(BaseModel):
     create_time = Column(DateTime, default=datetime.now, comment='Create time')
 
     def __repr__(self):
-        return f'<CaptchaCategory(category_type="{self.name}",' \
-               f'create_time="{self.create_time}",update_time="{self.update_time}")>'
+        return f'<CaptchaCategory(name="{self.name}",id="{self.id}")>'
 
 
 class StorageModel(BaseModel):
@@ -38,6 +37,9 @@ class StorageModel(BaseModel):
     default = Column(Boolean, default=False, comment='Default opening mode.')
     update_time = Column(DateTime, onupdate=datetime.now, default=datetime.now, comment='Update time.')
     create_time = Column(DateTime, default=datetime.now, comment='Create time.')
+
+    def __repr__(self):
+        return f'<StorageModel(name="{self.name}",uri="{self.uri}",default="{self.default}")>'
 
 
 class CaptchaRecordModel(BaseModel):
@@ -56,6 +58,9 @@ class CaptchaRecordModel(BaseModel):
     update_time = Column(DateTime, onupdate=datetime.now, default=datetime.now, comment='Update time.')
     create_time = Column(DateTime, default=datetime.now, comment='Create time.')
 
+    def __repr__(self):
+        return f'<CaptchaRecordModel(id="{self.id}",result="{self.result}",success={self.success})>'
+
 
 class CaptchaFileModel(BaseModel):
     """
@@ -72,3 +77,7 @@ class CaptchaFileModel(BaseModel):
     file_mark = Column(String(255), default=None, comment='Image mark.(foreground or background image)')
     update_time = Column(DateTime, onupdate=datetime.now, default=datetime.now, comment='Update time.')
     create_time = Column(DateTime, default=datetime.now, comment='Create time.')
+
+    def __repr__(self):
+        return f'<CaptchaFileModel(record_id="{self.record_id}",' \
+               f'file_type="{self.file_type}",filename="{self.filename}")>'

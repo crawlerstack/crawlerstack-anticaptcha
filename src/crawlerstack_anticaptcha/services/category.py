@@ -37,7 +37,7 @@ class CategoryService:
 
     async def update(self):
         """update"""
-        await self.category_repository.update_by_id(self.category_id, self.name)
+        await self.category_repository.update_by_id(self.category_id, name=self.name)
         return Message(
             code=200,
             message='ok'

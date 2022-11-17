@@ -1,5 +1,6 @@
 """numerical captcha"""
 import re
+from pathlib import Path
 
 import ddddocr
 
@@ -7,10 +8,12 @@ from crawlerstack_anticaptcha.captcha.base import BaseCaptcha
 from crawlerstack_anticaptcha.captcha.numerical.model import NumericalModel
 from crawlerstack_anticaptcha.captcha.numerical.preprocessing import \
     Preprocessing
+from crawlerstack_anticaptcha.config import settings
 
 
 class NumericalCaptcha(BaseCaptcha):
     """Numerical Captcha"""
+    image_split_path = Path(settings.CAPTCHA_IMAGE_PATH) / 'numerical-captcha/split/'
 
     def parse(self):
         """parse"""

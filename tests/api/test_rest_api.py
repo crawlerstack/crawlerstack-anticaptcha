@@ -27,13 +27,13 @@ def test_anticaptcha(mocker, client, mock_path):
 def test_record(mocker, client):
     """test record"""
     payload = {"success": False}
-    update = mocker.patch.object(CaptchaRecordRepository, 'update_by_pk')
+    update = mocker.patch.object(CaptchaRecordRepository, 'update_by_id')
     response = client.put(
         '/api/v1/captcha/record/123',
         data=payload
     )
     assert response.status_code == 200
-    update.assert_called_with('123', False)
+    update.assert_called_with('123', success=False)
     assert response.json() == {
         'code': 200, 'data': None,
         'message': 'Update file id is the "success"=False of "123".'}

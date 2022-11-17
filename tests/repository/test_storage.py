@@ -1,6 +1,5 @@
 """test storage repository"""
 import logging
-from datetime import datetime
 
 import pytest
 
@@ -10,15 +9,11 @@ from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
 @pytest.mark.asyncio
 async def test_update_by_id(storage_repository, init_storage, caplog):
     """test update by id"""
-    caplog.set_level(logging.INFO)
-    await storage_repository.update_by_id(1, False)
+    caplog.set_level(logging.DEBUG)
+    await storage_repository.update_by_id(1, default=False)
     assert 'Update' in caplog.text
     res = await storage_repository.get_by_id(1)
     assert not res.default
-    assert res.update_time.date() == datetime.now().date()
-
-    with pytest.raises(ObjectDoesNotExist):
-        await storage_repository.update_by_id(5, False)
 
 
 @pytest.mark.asyncio

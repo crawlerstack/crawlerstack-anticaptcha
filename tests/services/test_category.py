@@ -12,8 +12,7 @@ async def test_get_all(init_category):
     """test_get_all"""
     category = CategoryService()
     result = await category.get_all()
-    assert result == Message(code=200, data=[{'id': 1, 'name': 'test'}],
-                             message='The identified captcha category can be provided.')
+    assert result == Message(code=200, data=[], message='The identified captcha category can be provided.')
 
 
 @pytest.mark.asyncio
@@ -32,5 +31,5 @@ async def test_update(mocker):
     category = CategoryService(category_id=1, name='foo')
     update_by_id = mocker.patch.object(CategoryRepository, 'update_by_id')
     result = await category.update()
-    update_by_id.assert_called_with(1, 'foo')
+    update_by_id.assert_called_with(1, name='foo')
     assert result == Message(code=200, data=None, message='ok')

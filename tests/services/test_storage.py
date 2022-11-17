@@ -25,7 +25,7 @@ async def test_update(mocker):
     update_by_id = mocker.patch.object(StorageRepository, 'update_by_id')
     storage = StorageService(storage_id=1, default=True)
     result = await storage.update()
-    update_by_id.assert_called_with(1, True)
+    update_by_id.assert_called_with(1, default=True)
     assert result == Message(code=200, data=None, message='ok')
 
 

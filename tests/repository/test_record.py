@@ -5,15 +5,11 @@ import pytest
 
 from crawlerstack_anticaptcha.models import (CaptchaFileModel,
                                              CaptchaRecordModel)
-from crawlerstack_anticaptcha.repositories.record import \
-    CaptchaRecordRepository
-from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
 
 
 @pytest.mark.asyncio
-async def test_create_record(caplog):
+async def test_create_record(record_repository, caplog):
     """test create record"""
-    record_repository = CaptchaRecordRepository()
     caplog.set_level(logging.DEBUG)
     result = await record_repository.create_record(
         CaptchaRecordModel(category_id=1, result=1),
@@ -24,14 +20,10 @@ async def test_create_record(caplog):
 
 
 @pytest.mark.asyncio
-async def test_update_by_pk(caplog, init_record):
+async def test_update_by_id(record_repository, caplog, init_record):
     """test_update_by_pk"""
-    record_repository = CaptchaRecordRepository()
     caplog.set_level(logging.DEBUG)
-    await record_repository.update_by_pk(1, True)
+    await record_repository.update_by_id(1, success=True)
     assert 'Update' in caplog.text
     res = await record_repository.get_by_id(1)
-    assert res.success
-
-    with pytest.raises(ObjectDoesNotExist):
-        await record_repository.update_by_pk(5, True)
+    assert res.success is True

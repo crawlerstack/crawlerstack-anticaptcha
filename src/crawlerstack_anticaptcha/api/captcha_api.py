@@ -16,8 +16,8 @@ router = APIRouter()
 @router.post('/identify/')
 async def anticaptcha(
         category: str = Form(description='验证码类型参数'),
-        image: UploadFile = File(description='默认为背景图片或，验证码只需一张图像'),
-        fore_image: UploadFile = File(default=None, description='前景图'),
+        image: UploadFile = File(description='默认为背景图片或验证码只需一张图像的情况'),
+        fore_image: UploadFile = File(default=None, description='前景图,例如滑块验证码中的滑块部分'),
         extra_content: str = Form(default=None, description='额外描述，例如点选文字中文字内容'),
         # user_agent: Union[str, None] = Header(default=None)
 ) -> Message:
@@ -26,7 +26,7 @@ async def anticaptcha(
     the corresponding captcha is identified and the result is returned
     """
     captcha_service = CaptchaService(
-        image=image, fore_image=fore_image, category=category, extra_content=extra_content
+        bg_image=image, fore_image=fore_image, category=category, extra_content=extra_content
     )
     result_message = await captcha_service.check()
     return result_message

@@ -20,7 +20,7 @@ class Preprocessing(BasePreprocessing):
         降噪，
         :return:
         """
-        blur = cv2.medianBlur(self.image, 3)
+        blur = cv2.medianBlur(self.bg_image(), 3)
         return blur
 
     def inv(self):
@@ -63,7 +63,7 @@ class Preprocessing(BasePreprocessing):
         tag = 1
         img_list = self.crop_image()
         for box in img_list:
-            cv2.drawContours(self.image, [box], 0, (0, 0, 255), 2)
+            cv2.drawContours(self.bg_image(), [box], 0, (0, 0, 255), 2)
             roi = self.inv()[box[0][1]:box[3][1], box[0][0]:box[1][0]]
             resize_img = cv2.resize(roi, (23, 19))
             filepath = self.captcha_image_path / f'numerical-captcha/split/{tag}.jpg'
@@ -73,14 +73,3 @@ class Preprocessing(BasePreprocessing):
             else:
                 cv2.imwrite(str(filepath.resolve()), resize_img)
             tag += 1
-
-    # @staticmethod
-    # def show_img(image):
-    #     """
-    #     show image
-    #     :param image:
-    #     :return:
-    #     """
-    #     cv2.imshow('img', image)
-    #     cv2.waitKey(0)
-    #     cv2.destroyAllWindows()

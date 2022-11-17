@@ -12,7 +12,7 @@ def test_update_storage(mocker, client):
         data={'default': False}
     )
     assert response.status_code == 200
-    update_by_id.assert_called_with(1, False)
+    update_by_id.assert_called_with(1, default=False)
     assert response.json() == {'code': 200, 'data': None, 'message': 'ok'}
 
 

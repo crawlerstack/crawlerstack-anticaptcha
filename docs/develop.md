@@ -20,63 +20,14 @@
 - 滑块验证，接收到验证码图片后，使用opencv计算缺口到边缘的距离
 - 旋转验证，需要上传两张图片（即原图和需要旋转的图片）两图对比计算角度，通过网页中验证码滑块与旋转角度的比率关系计算出网页中滑块需要移动的距离
 
+验证码实例网站
+
+- 数字字母混合 [中国知网](http://my.cnki.net/elibregister/commonRegister.aspx)
+- 滑块验证码 [海关数据网站](http://43.248.49.97/)
+
 ## 接口调用
 
-- poet 请求
 
-```base
-url = "***/crawlerstack/captcha/identify/"
-
-payload={'category': 'SliderCaptcha'}
-files=[
-  ('file',('foo.jpg',open('image path','rb'),'image/jpeg'))
-]
-
-response = requests.post(url, data=payload, files=files)
-```
-
-- put 请求
-
-```base
-url = "***/crawlerstack/captcha/record/[file-uuid]"
-
-payload = json.dumps({
-  "category": "SliderCaptcha",
-  "success": True
-})
-headers = {
-  'Content-Type': 'application/json'
-}
-
-response = requests.put(url, headers=headers, data=payload)
-
-```
-
-### 接口返回值
-
-post 返回值
-
-```json
-{
-    "code": 200,
-    "data": {
-        "file_id": "f1261966-406b-11ed-a416-0242ac140002",
-        "value": 242,
-        "category": "SliderCaptcha"
-    },
-    "message": "File parsing succeeded."
-}
-```
-
-put 返回值
-
-```json
-{
-    "code": 200,
-    "data": null,
-    "message": "Update file id is the \"success\"=True of f1261966-406b-11ed-a416-0242ac140002."
-}
-```
 
 ### 数据库表结构
 

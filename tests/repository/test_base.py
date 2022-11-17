@@ -14,11 +14,19 @@ def test_model():
 
 
 @pytest.mark.asyncio
-async def test_delete_by_id(category_repository, init_category):
-    """test_table_exists"""
-    await category_repository.delete_by_id(1)
-    with pytest.raises(ObjectDoesNotExist):
-        await category_repository.get_by_id(1)
+async def test_create(category_repository):
+    """test_captcha_insert"""
+    category_repository.create(name='foo')
+    result = await category_repository.get_by_id(1)
+    assert result.name == 'foo'
+
+
+@pytest.mark.asyncio
+async def test_get_all(category_repository, init_category):
+    """test_get_all"""
+    result = await category_repository.get_all()
+    for _i in result:
+        assert _i.name == 'test'
 
 
 @pytest.mark.asyncio
@@ -32,18 +40,8 @@ async def test_get_by_id(category_repository, init_category):
 
 
 @pytest.mark.asyncio
-async def test_create(category_repository):
-    """test_captcha_insert"""
-    await category_repository.create(
-        name='foo',
-    )
-    result = await category_repository.get_by_id(1)
-    assert result.name == 'foo'
-
-
-@pytest.mark.asyncio
-async def test_get_all(category_repository, init_category):
-    """test_get_all"""
-    result = await category_repository.get_all()
-    for _i in result:
-        assert _i.name == 'test'
+async def test_delete_by_id(category_repository, init_category):
+    """test_table_exists"""
+    await category_repository.delete_by_id(1)
+    with pytest.raises(ObjectDoesNotExist):
+        await category_repository.get_by_id(1)

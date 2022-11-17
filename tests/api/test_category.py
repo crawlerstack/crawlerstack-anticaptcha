@@ -23,17 +23,15 @@ def test_update_captcha_category(mocker, client):
         data={'name': 'bar'}
     )
     assert response.status_code == 200
-    update_by_id.assert_called_with(1, 'bar')
+    update_by_id.assert_called_with(1, name='bar')
     assert response.json() == {'code': 200, 'data': None, 'message': 'ok'}
 
 
-def test_get_category(client, init_category):
+def test_get_category(client):
     """test get category"""
     response = client.get('/api/v1/captcha/categories')
     assert response.status_code == 200
     assert response.json() == {
         'code': 200,
-        'data': [
-            {'id': 1, 'name': 'test'}
-        ],
+        'data': [],
         'message': 'The identified captcha category can be provided.'}

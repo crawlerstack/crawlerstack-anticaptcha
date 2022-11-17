@@ -31,7 +31,7 @@ class StorageService:
 
     async def update(self):
         """update storage config"""
-        await self.storage_repository.update_by_id(self.storage_id, self.default)
+        await self.storage_repository.update_by_id(self.storage_id, default=self.default)
         return Message(
             code=200,
             message='ok'
