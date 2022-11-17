@@ -1,7 +1,7 @@
 """Repository"""
 import logging
 
-from fastapi_sa.database import db, session_ctx
+from fastapi_sa.database import db
 from sqlalchemy import delete
 from sqlalchemy.future import select
 
@@ -19,7 +19,6 @@ class BaseRepository:
         """model"""
         raise NotImplementedError()
 
-    @session_ctx
     async def create(self, /, **kwargs):
         """
         create
