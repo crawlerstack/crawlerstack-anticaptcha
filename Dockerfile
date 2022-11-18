@@ -20,7 +20,7 @@ RUN python -m pip install -U pip
 
 COPY --from=0 /app/dist /app/dist
 
-RUN pip install /app/dist/*.whl
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple /app/dist/*.whl
 
 EXPOSE 8000
 
