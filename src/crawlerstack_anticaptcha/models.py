@@ -42,6 +42,7 @@ class StorageModel(Base):
         return f'<StorageModel(name="{self.name}",uri="{self.uri}",default="{self.default}")>'
 
 
+
 class CaptchaRecordModel(Base):
     """
     验证码记录表

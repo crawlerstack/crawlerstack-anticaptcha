@@ -33,3 +33,7 @@ def test_captcha_factory(mocker, mock_path, captcha):
         captcha = CaptchaParser('NumericalCaptcha')
         num_res = captcha.factory(mock_path / 'foo', None, None)
         assert num_res == 1
+    captcha = CaptchaParser('NumericalCaptcha')
+    mocker.patch.object(NumericalCaptcha, 'parse', return_value='foo')
+    res = captcha.factory(mock_path / 'foo', None, None)
+    assert res == 'foo'

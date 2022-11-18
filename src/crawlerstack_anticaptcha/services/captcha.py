@@ -59,6 +59,15 @@ class CaptchaService:
                 if parse_result:
                     record = await self.multi_img_record(
                         category, parse_result, bg_img_file_uuid, fore_img_file_uuid, file_info
+                file = await self.storage.factory(await self.image.read(), self.file_uuid,
+                                                  PurePath(self.image.content_type).stem)
+                captcha = CaptchaParser(self.category)
+                parse_result = captcha.factory(file.get('file'), self.fore_image, self.extra_content)
+                if parse_result:
+                    record = await self.record_repository.create_record(
+                        CaptchaRecordModel(category_id=category.id, result=parse_result),
+                        [CaptchaFileModel(filename=self.file_uuid, file_type=PurePath(self.image.content_type).stem,
+                                          storage_id=file.get('id'))]
                     )
                     result_message = Message(
                         code=200, data=MessageData(value=parse_result, category=self.category, id=record.id),
@@ -68,6 +77,10 @@ class CaptchaService:
 
                 await self.multi_img_record(
                     category, parse_result, bg_img_file_uuid, fore_img_file_uuid, file_info, success=False
+                await self.record_repository.create_record(
+                    CaptchaRecordModel(category_id=category.id, result=parse_result, success=False),
+                    [CaptchaFileModel(filename=self.file_uuid, file_type=PurePath(self.image.content_type).stem,
+                                      storage_id=file.get('id'))]
                 )
                 raise CaptchaParseFailed()
 
