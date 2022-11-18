@@ -1,6 +1,5 @@
 """Base"""
 import logging
-from pathlib import Path
 
 from crawlerstack_anticaptcha.models import StorageModel
 
@@ -16,13 +15,3 @@ class BaseStorage:
     async def save(self, name: str, file_type: str, data: bytes):
         """save"""
         raise NotImplementedError
-
-    def file(self, name: str, file_type: str):
-        """
-        file
-        :param name:
-        :param file_type:
-        :return:
-        """
-        local_save_path = self.storage.uri.split('://')[1]
-        return Path(local_save_path) / f'{name}.{file_type}'

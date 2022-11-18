@@ -88,7 +88,7 @@ def upgrade() -> None:
         [
             {
                 'name': 'local',
-                'uri': f'localfile://{settings.CAPTCHA_IMAGE_PATH}',
+                'uri': f'file://{settings.CAPTCHA_IMAGE_PATH}',
                 'default': True,
                 'update_time': '2022-11-11 16:54:34',
                 'create_time': '2022-11-11 16:54:34'

@@ -3,10 +3,10 @@ from typing import List
 
 from fastapi_sa.database import db
 
-from crawlerstack_anticaptcha.db import CaptchaRecordSchema
 from crawlerstack_anticaptcha.models import (CaptchaFileModel,
                                              CaptchaRecordModel)
 from crawlerstack_anticaptcha.repositories.base import BaseRepository
+from crawlerstack_anticaptcha.utils.schema import CaptchaRecordSchema
 
 
 class CaptchaRecordRepository(BaseRepository):

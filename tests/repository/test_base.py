@@ -3,10 +3,10 @@
 import pytest
 from sqlalchemy import func, select
 
-from crawlerstack_anticaptcha.db import CaptchaCategorySchema
 from crawlerstack_anticaptcha.models import CaptchaCategoryModel
 from crawlerstack_anticaptcha.repositories.base import BaseRepository
 from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
+from crawlerstack_anticaptcha.utils.schema import CaptchaCategorySchema
 
 
 def test_model():

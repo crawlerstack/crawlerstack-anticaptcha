@@ -2,10 +2,10 @@
 from fastapi_sa.database import db
 from sqlalchemy.future import select
 
-from crawlerstack_anticaptcha.db import StorageSchema
 from crawlerstack_anticaptcha.models import StorageModel
 from crawlerstack_anticaptcha.repositories.base import BaseRepository
 from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
+from crawlerstack_anticaptcha.utils.schema import StorageSchema
 
 
 class StorageRepository(BaseRepository):
