@@ -6,7 +6,7 @@ from pydantic import BaseModel  # pylint: disable=no-name-in-module
 
 class MessageData(BaseModel):
     """MessageData"""
-    id: str
+    id: int
     value: int | str
     category: str
 

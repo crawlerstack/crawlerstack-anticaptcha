@@ -1,7 +1,9 @@
 """category"""
+import logging
 from datetime import datetime
 
 from crawlerstack_anticaptcha.repositories.category import CategoryRepository
+from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
 from crawlerstack_anticaptcha.utils.schema import Message
 
 
@@ -13,6 +15,7 @@ class CategoryService:
         self.name = name
         self.category_id = category_id
         self.now = datetime.now()
+        self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
 
     async def get_all(self):
         """query_category"""
@@ -37,8 +40,11 @@ class CategoryService:
 
     async def update(self):
         """update"""
-        await self.category_repository.update_by_id(self.category_id, name=self.name)
-        return Message(
-            code=200,
-            message='ok'
-        )
+        try:
+            await self.category_repository.update_by_id(self.category_id, name=self.name)
+            return Message(
+                code=200,
+                message='ok'
+            )
+        except AttributeError as exc:
+            raise ObjectDoesNotExist(f'Can not find object by id={self.category_id}.') from exc
