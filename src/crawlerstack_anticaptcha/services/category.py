@@ -4,7 +4,7 @@ from datetime import datetime
 
 from crawlerstack_anticaptcha.repositories.category import CategoryRepository
 from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
-from crawlerstack_anticaptcha.utils.schema import Message
+from crawlerstack_anticaptcha.utils.message import Message
 
 
 class CategoryService:

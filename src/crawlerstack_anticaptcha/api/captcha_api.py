@@ -7,7 +7,7 @@ from crawlerstack_anticaptcha.services.captcha import CaptchaService
 from crawlerstack_anticaptcha.services.category import CategoryService
 from crawlerstack_anticaptcha.services.storage import StorageService
 from crawlerstack_anticaptcha.services.update_record import UpdateRecordService
-from crawlerstack_anticaptcha.utils.schema import Message
+from crawlerstack_anticaptcha.utils.message import Message
 
 logger = logging.getLogger(f'{__name__}  {__name__}')
 router = APIRouter()

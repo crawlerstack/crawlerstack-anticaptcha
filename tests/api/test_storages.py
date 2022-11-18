@@ -1,7 +1,7 @@
 """test storages api"""
 from crawlerstack_anticaptcha.repositories.storage import StorageRepository
 from crawlerstack_anticaptcha.services.storage import StorageService
-from crawlerstack_anticaptcha.utils.schema import Message
+from crawlerstack_anticaptcha.utils.message import Message
 
 
 def test_update_storage(mocker, client):

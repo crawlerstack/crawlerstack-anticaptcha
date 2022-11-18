@@ -6,7 +6,7 @@ import pytest
 from crawlerstack_anticaptcha.models import StorageModel
 from crawlerstack_anticaptcha.repositories.storage import StorageRepository
 from crawlerstack_anticaptcha.services.storage import StorageService
-from crawlerstack_anticaptcha.utils.schema import Message
+from crawlerstack_anticaptcha.utils.message import Message
 
 
 @pytest.mark.asyncio

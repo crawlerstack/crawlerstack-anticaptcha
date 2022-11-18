@@ -39,14 +39,12 @@ async def test_single_img_record(mocker):
     test_image = mocker.MagicMock()
     category = CaptchaCategoryModel(id=1)
     captcha_service = CaptchaService(bg_image=test_image, category='test', fore_image=test_image)
-    res = await captcha_service.single_img_record(
+    await captcha_service.image_record(
         category=category,
         parse_result=1,
-        file_uuid='foo',
-        file_info={'id': 1},
+        file_info=[{'file': 'file', 'file_name': 'file_name', 'file_type': 'file_type', 'id': 'id'}],
     )
     create_record.assert_called()
-    assert res
 
 
 @pytest.mark.asyncio
@@ -56,11 +54,9 @@ async def test_multi_img_record(mocker):
     test_image = mocker.MagicMock()
     category = CaptchaCategoryModel(id=1)
     captcha_service = CaptchaService(bg_image=test_image, category='test', fore_image=test_image)
-    await captcha_service.multi_img_record(
+    await captcha_service.image_record(
         category=category,
         parse_result=1,
-        bg_img_file_uuid='foo',
-        fore_img_file_uuid='foo',
         file_info=({'id': 1}, {'id': 1}),
     )
     create_record.assert_called()

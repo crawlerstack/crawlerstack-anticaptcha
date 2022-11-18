@@ -5,7 +5,7 @@ from crawlerstack_anticaptcha.api.rest_api import start
 from crawlerstack_anticaptcha.repositories.record import \
     CaptchaRecordRepository
 from crawlerstack_anticaptcha.services.captcha import CaptchaService
-from crawlerstack_anticaptcha.utils.schema import Message
+from crawlerstack_anticaptcha.utils.message import Message
 
 
 def test_anticaptcha(mocker, client, mock_path):

@@ -1,7 +1,7 @@
 """Update record"""
 from crawlerstack_anticaptcha.repositories.record import \
     CaptchaRecordRepository
-from crawlerstack_anticaptcha.utils.schema import Message
+from crawlerstack_anticaptcha.utils.message import Message
 
 
 class UpdateRecordService:

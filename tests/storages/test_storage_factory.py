@@ -25,13 +25,3 @@ async def test_get_default_storage(init_storage, storage_name):
         await storage.get_default_storage()
         assert storage.name == 'test'
         assert storage.storage.uri == 'foo'
-
-
-# @pytest.mark.asyncio
-# async def test_factory(mocker, init_storage):
-#     """test factory"""
-#     storage = Storage()
-#     storage.storage = StorageModel(id=1, name='test', uri='foo')
-#     mocker.patch.object(LocalStorages, 'save', return_value='foo')
-#     res = await storage.factory(b'1', 'foo', 'png')
-#     assert res == {'file': 'foo', 'id': 1}

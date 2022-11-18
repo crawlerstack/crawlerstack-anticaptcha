@@ -4,7 +4,7 @@ import pytest
 
 from crawlerstack_anticaptcha.repositories.category import CategoryRepository
 from crawlerstack_anticaptcha.services.category import CategoryService
-from crawlerstack_anticaptcha.utils.schema import Message
+from crawlerstack_anticaptcha.utils.message import Message
 
 
 @pytest.mark.asyncio

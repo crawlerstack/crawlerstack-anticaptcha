@@ -2,6 +2,7 @@
 import logging
 import uuid
 from pathlib import PurePath
+from typing import List
 
 from fastapi import File
 
@@ -15,7 +16,7 @@ from crawlerstack_anticaptcha.repositories.record import \
 from crawlerstack_anticaptcha.storages import Storage
 from crawlerstack_anticaptcha.utils.exception import (CaptchaParseFailed,
                                                       UnsupportedMediaType)
-from crawlerstack_anticaptcha.utils.schema import Message, MessageData
+from crawlerstack_anticaptcha.utils.message import Message, MessageData
 
 
 class CaptchaService:
@@ -40,15 +41,15 @@ class CaptchaService:
             if self.fore_image is None:
                 file_uuid = str(uuid.uuid1())
                 file_info = await self.save_file(file_uuid)
-                parse_result = await self.parse(file_info)
+                parse_result = await self.parse(file_info[0])
                 if parse_result:
-                    record = await self.single_img_record(category, parse_result, file_uuid, file_info)
+                    record = await self.image_record(category, parse_result, file_info)
                     result_message = Message(
                         code=200, data=MessageData(value=parse_result, category=self.category, id=record.id),
                         message='File parsing succeeded.'
                     )
                     return result_message
-                await self.single_img_record(category, parse_result, file_uuid, file_info, success=False)
+                await self.image_record(category, parse_result, file_info, success=False)
                 raise CaptchaParseFailed()
 
             if self.fore_image:
@@ -57,8 +58,8 @@ class CaptchaService:
                 file_info = await self.save_file(bg_img_file_uuid, fore_img_file_uuid)
                 parse_result = await self.parse(file_info[0], file_info[1])
                 if parse_result:
-                    record = await self.multi_img_record(
-                        category, parse_result, bg_img_file_uuid, fore_img_file_uuid, file_info
+                    record = await self.image_record(
+                        category, parse_result, file_info
                     )
                     result_message = Message(
                         code=200, data=MessageData(value=parse_result, category=self.category, id=record.id),
@@ -66,8 +67,8 @@ class CaptchaService:
                     )
                     return result_message
 
-                await self.multi_img_record(
-                    category, parse_result, bg_img_file_uuid, fore_img_file_uuid, file_info, success=False
+                await self.image_record(
+                    category, parse_result, file_info, success=False
                 )
                 raise CaptchaParseFailed()
 
@@ -93,56 +94,30 @@ class CaptchaService:
             fore_img_file: dict = await self.storage.factory(
                 fore_data, fore_img_file_uuid, PurePath(self.fore_image.content_type).stem
             )
-            return bg_img_file, fore_img_file
-        return await self.storage.factory(
-            bg_data, bg_img_file_uuid, PurePath(self.bg_image.content_type).stem
-        )
+            return [bg_img_file, fore_img_file]
+        return [await self.storage.factory(bg_data, bg_img_file_uuid, PurePath(self.bg_image.content_type).stem)]
 
-    async def single_img_record(
+    async def image_record(
             self,
             category: CaptchaCategoryModel,
             parse_result: str | int,
-            file_uuid: str,
-            file_info: dict,
+            file_info: List[dict],
             success: bool = None
     ):
-        """single img record"""
-        record = await self.record_repository.create_record(
-            CaptchaRecordModel(category_id=category.id, result=parse_result, success=success),
-            [
+        """image_record"""
+        captcha_files = []
+        for i in file_info:
+            captcha_files.append(
                 CaptchaFileModel(
-                    filename=file_uuid,
-                    file_type=PurePath(self.bg_image.content_type).stem,
-                    storage_id=file_info.get('id'))
-            ]
-        )
-        return record
-
-    async def multi_img_record(
-            self,
-            category: CaptchaCategoryModel,
-            parse_result: str | int,
-            bg_img_file_uuid: str,
-            fore_img_file_uuid: str,
-            file_info,
-            success: bool = None
-    ):
-        """Multi image record"""
-        record = await self.record_repository.create_record(
-            CaptchaRecordModel(category_id=category.id, result=parse_result, success=success),
-            [
-                CaptchaFileModel(
-                    filename=bg_img_file_uuid,
-                    file_type=PurePath(self.bg_image.content_type).stem,
-                    storage_id=file_info[0].get('id'),
-                    file_mark='Background image'
-                ),
-                CaptchaFileModel(
-                    filename=fore_img_file_uuid,
-                    file_type=PurePath(self.fore_image.content_type).stem,
-                    storage_id=file_info[1].get('id'),
-                    file_mark='Fore image'
+                    filename=i.get('file_name'),
+                    file_type=i.get('file_type'),
+                    storage_id=i.get('id'),
+                    file_mark='Background image',
                 )
-            ]
+            )
+
+        record = await self.record_repository.create_record(
+            CaptchaRecordModel(category_id=category.id, result=parse_result, success=success),
+            captcha_files
         )
         return record

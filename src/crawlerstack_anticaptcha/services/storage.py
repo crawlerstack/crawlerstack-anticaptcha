@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from crawlerstack_anticaptcha.repositories.storage import StorageRepository
-from crawlerstack_anticaptcha.utils.schema import Message
+from crawlerstack_anticaptcha.utils.message import Message
 
 
 class StorageService:

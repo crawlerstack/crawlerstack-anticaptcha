@@ -22,7 +22,9 @@
 
 验证码实例网站
 
-- 数字字母混合 [中国知网](http://my.cnki.net/elibregister/commonRegister.aspx)
+- 数字字母混合
+    - [中国知网登录页面](http://my.cnki.net/elibregister/commonRegister.aspx)
+  
 - 滑块验证码
     - [海关数据网站](http://43.248.49.97/);
     - [https://dun.163.com/trial/jigsaw](https://dun.163.com/trial/jigsaw)

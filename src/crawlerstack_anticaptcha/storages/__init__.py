@@ -31,4 +31,4 @@ class Storage(metaclass=SingletonMeta):
         await self.get_default_storage()
         storage_instance = self.storage_funcs.get(self.name)(self.storage)
         file = await storage_instance.save(file_name, file_type, data)
-        return {'file': file, 'id': self.storage.id}
+        return {'file': file, 'file_name': file_name, 'file_type': file_type, 'id': self.storage.id}
