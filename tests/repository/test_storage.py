@@ -7,7 +7,7 @@ from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
 
 
 @pytest.mark.asyncio
-async def test_update_by_id(storage_repository, init_storage, caplog):
+async def test_update_by_id(storage_repository, init_storage, caplog, session):
     """test update by id"""
     caplog.set_level(logging.DEBUG)
     await storage_repository.update_by_id(1, default=False)
@@ -17,7 +17,7 @@ async def test_update_by_id(storage_repository, init_storage, caplog):
 
 
 @pytest.mark.asyncio
-async def test_init_default(storage_repository, init_storage):
+async def test_init_default(storage_repository, init_storage, session):
     """test_init_default"""
     await storage_repository.init_default()
     res = await storage_repository.get_by_name('local')
@@ -25,14 +25,14 @@ async def test_init_default(storage_repository, init_storage):
 
 
 @pytest.mark.asyncio
-async def test_get_by_name(storage_repository, init_storage):
+async def test_get_by_name(storage_repository, init_storage, session):
     """test get default"""
     result = await storage_repository.get_by_name('local')
     assert result.uri == 'foo'
 
 
 @pytest.mark.asyncio
-async def test_update_by_name(storage_repository, init_storage):
+async def test_update_by_name(storage_repository, init_storage, session):
     """test_update_by_name"""
     await storage_repository.update_by_name('local')
     res = await storage_repository.get_by_name('local')

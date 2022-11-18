@@ -2,6 +2,7 @@
 from fastapi_sa.database import db
 from sqlalchemy.future import select
 
+from crawlerstack_anticaptcha.db import CaptchaCategorySchema
 from crawlerstack_anticaptcha.models import CaptchaCategoryModel
 from crawlerstack_anticaptcha.repositories.base import BaseRepository
 from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
@@ -15,6 +16,11 @@ class CategoryRepository(BaseRepository):
         """model"""
         return CaptchaCategoryModel
 
+    @property
+    def schema(self):
+        """schema"""
+        return CaptchaCategorySchema
+
     async def get_by_name(self, name: str) -> CaptchaCategoryModel:
         """
         通过类型名称查找对应的id
@@ -27,4 +33,4 @@ class CategoryRepository(BaseRepository):
         if result is None:
             raise ObjectDoesNotExist('No captcha type found, Please upload correctly')
         self.logger.debug('Get %s from Captcha', name)
-        return result
+        return self.schema.from_orm(result)

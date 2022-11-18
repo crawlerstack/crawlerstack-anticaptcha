@@ -1,24 +1,23 @@
 """Test config"""
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import pytest
 from click.testing import CliRunner
 from fastapi.testclient import TestClient
-from fastapi_sa.database import db, session_ctx
+from fastapi_sa.database import db
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from crawlerstack_anticaptcha.api.rest_api import app
 from crawlerstack_anticaptcha.config import settings
-from crawlerstack_anticaptcha.models import (CaptchaCategoryModel,
+from crawlerstack_anticaptcha.models import (Base, CaptchaCategoryModel,
                                              CaptchaFileModel,
                                              CaptchaRecordModel, StorageModel)
 from crawlerstack_anticaptcha.repositories.category import CategoryRepository
 from crawlerstack_anticaptcha.repositories.record import \
     CaptchaRecordRepository
 from crawlerstack_anticaptcha.repositories.storage import StorageRepository
-
-collect_ignore = ["../tests/repository"]
-db.init(url=settings.DATABASE_URL)
 
 
 @pytest.fixture
@@ -34,65 +33,98 @@ def clicker():
     yield CliRunner()
 
 
-@pytest.fixture(name='category_repository')
-def category_repository_fixture():
+@pytest.fixture(autouse=True, name='migrate')
+async def migrate_fixture():
+    """migrate fixture"""
+    os.makedirs(Path(settings.DATABASE_URL.split('///')[1]).parent, exist_ok=True)
+    _engine = create_async_engine(settings.DATABASE_URL)
+    async with _engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+    await _engine.dispose()
+
+
+@pytest.fixture(autouse=True)
+async def db_init():
+    """db_init"""
+    db.init(settings.DATABASE_URL)
+
+
+@pytest.fixture()
+def db_session_ctx():
+    """db session context"""
+    token = db.set_session_ctx()
+    yield
+    db.reset_session_ctx(token)
+
+
+@pytest.fixture()
+async def session(db_session_ctx):
+    """session fixture"""
+    async with db.session.begin():
+        yield db.session
+
+
+@pytest.fixture()
+def category_repository():
     """category repository fixture"""
-    category_repository = CategoryRepository()
-    yield category_repository
+    yield CategoryRepository()
 
 
 @pytest.fixture(name='record_repository')
 def record_repository_fixture():
     """record_repository_fixture"""
-    record_repository = CaptchaRecordRepository()
-    yield record_repository
+    yield CaptchaRecordRepository()
 
 
 @pytest.fixture(name='storage_repository')
 def storage_repository_fixture():
     """captcha_file_repository_fixture"""
-    storage_repository = StorageRepository()
-    yield storage_repository
+    yield StorageRepository()
 
 
 @pytest.fixture(name='init_category')
-def init_category_fixture():
+async def init_category_fixture(migrate):
     """init Category table data"""
     categories = [
         CaptchaCategoryModel(name='test')
     ]
     db.session.add_all(categories)
+    await db.session.flush()
 
 
 @pytest.fixture(name='init_record')
-async def init_record_fixture():
+async def init_record_fixture(migrate):
     """init Category table data"""
-    records = [
-        CaptchaRecordModel(category_id=1, result='foo')
-    ]
-    db.session.add_all(records)
+    async with db():
+        records = [
+            CaptchaRecordModel(category_id=1, result='foo')
+        ]
+        db.session.add_all(records)
+        await db.session.flush()
 
 
 @pytest.fixture(name='init_storage')
-@session_ctx
-async def init_storage_fixture():
+async def init_storage_fixture(migrate):
     """init_storage"""
-    storages = [
-        StorageModel(name='local', uri='foo', )
-    ]
-    db.session.add_all(storages)
+    async with db():
+        storages = [
+            StorageModel(name='local', uri='foo')
+        ]
+        db.session.add_all(storages)
+        await db.session.flush()
 
 
 @pytest.fixture(name='init_file_record')
-@session_ctx
-async def init_file_record_fixture():
+async def init_file_record_fixture(migrate):
     """init_file_record"""
-    async with db() as session:
+    async with db():
         files = [
             CaptchaFileModel(record_id=1, filename='foo', file_type='foo', storage_id=1),
             CaptchaFileModel(record_id=1, filename='bar', file_type='foo', storage_id=1),
         ]
-        session.add_all(files)
+        db.session.add_all(files)
+        await db.session.flush()
 
 
 @pytest.fixture(name='client')

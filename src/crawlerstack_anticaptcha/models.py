@@ -4,10 +4,10 @@ from datetime import datetime
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_base
 
-BaseModel = declarative_base()
+Base = declarative_base()
 
 
-class CaptchaCategoryModel(BaseModel):
+class CaptchaCategoryModel(Base):
     """
     验证码类型表
 
@@ -24,7 +24,7 @@ class CaptchaCategoryModel(BaseModel):
         return f'<CaptchaCategory(name="{self.name}",id="{self.id}")>'
 
 
-class StorageModel(BaseModel):
+class StorageModel(Base):
     """
     文件存储表
 
@@ -42,7 +42,7 @@ class StorageModel(BaseModel):
         return f'<StorageModel(name="{self.name}",uri="{self.uri}",default="{self.default}")>'
 
 
-class CaptchaRecordModel(BaseModel):
+class CaptchaRecordModel(Base):
     """
     验证码记录表
 
@@ -62,7 +62,7 @@ class CaptchaRecordModel(BaseModel):
         return f'<CaptchaRecordModel(id="{self.id}",result="{self.result}",success={self.success})>'
 
 
-class CaptchaFileModel(BaseModel):
+class CaptchaFileModel(Base):
     """
     验证码图像文件表
 

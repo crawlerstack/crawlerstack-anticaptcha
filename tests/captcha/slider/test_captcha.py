@@ -7,15 +7,6 @@ import pytest
 from crawlerstack_anticaptcha.captcha.slider.captcha import SliderCaptcha
 
 
-def test_image():
-    """test image"""
-    image_path = Path(r"C:\tmp\test\anticaptcha")
-    for i in image_path.iterdir():
-        slider = SliderCaptcha(background_image=i)
-        print(i)
-        print(slider.parse())
-
-
 def test_ocr_parse(mocker, mock_path):
     """test ocr parse"""
     test_image_file = mock_path / 'foo.png'

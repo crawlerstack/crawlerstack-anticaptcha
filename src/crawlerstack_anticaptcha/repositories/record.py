@@ -3,6 +3,7 @@ from typing import List
 
 from fastapi_sa.database import db
 
+from crawlerstack_anticaptcha.db import CaptchaRecordSchema
 from crawlerstack_anticaptcha.models import (CaptchaFileModel,
                                              CaptchaRecordModel)
 from crawlerstack_anticaptcha.repositories.base import BaseRepository
@@ -16,6 +17,11 @@ class CaptchaRecordRepository(BaseRepository):
         """model"""
         return CaptchaRecordModel
 
+    @property
+    def schema(self):
+        """schema"""
+        return CaptchaRecordSchema
+
     async def create_record(self, record_obj: CaptchaRecordModel, file_objs: List[CaptchaFileModel]):
         """
         create_record
@@ -27,4 +33,4 @@ class CaptchaRecordRepository(BaseRepository):
             file_obj.record_id = record_obj.id
             session.add(file_obj)
         self.logger.debug('Create %s', record_obj)
-        return record_obj
+        return self.schema.from_orm(record_obj)

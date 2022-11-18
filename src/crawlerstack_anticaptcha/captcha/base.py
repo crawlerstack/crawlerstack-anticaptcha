@@ -14,4 +14,4 @@ class BaseCaptcha:
 
     def parse(self):
         """parse"""
-        raise NotImplementedError
+        raise NotImplementedError()

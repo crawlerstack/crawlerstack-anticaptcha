@@ -56,7 +56,7 @@ async def test_multi_img_record(mocker):
     test_image = mocker.MagicMock()
     category = CaptchaCategoryModel(id=1)
     captcha_service = CaptchaService(bg_image=test_image, category='test', fore_image=test_image)
-    res = await captcha_service.multi_img_record(
+    await captcha_service.multi_img_record(
         category=category,
         parse_result=1,
         bg_img_file_uuid='foo',
@@ -64,4 +64,3 @@ async def test_multi_img_record(mocker):
         file_info=({'id': 1}, {'id': 1}),
     )
     create_record.assert_called()
-    assert res

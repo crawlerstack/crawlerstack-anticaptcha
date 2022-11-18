@@ -5,8 +5,8 @@ ENV PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/
 
 WORKDIR /app
 
-RUN python -m pip  install -U pip  \
-    && pip install  -U poetry
+RUN python -m pip install -U pip  \
+    && pip install -U poetry
 
 COPY . ./
 
@@ -16,12 +16,11 @@ FROM python:3.10
 
 WORKDIR /app
 
-
 RUN python -m pip install -U pip
 
 COPY --from=0 /app/dist /app/dist
 
-RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple  /app/dist/*.whl
+RUN pip install /app/dist/*.whl
 
 EXPOSE 8000
 

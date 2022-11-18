@@ -18,14 +18,13 @@ class StorageService:
 
     async def create(self):
         """create storage"""
-        obj = await self.storage_repository.create(
+        await self.storage_repository.create(
             uri=self.uri,
             name=self.name,
             default=self.default,
         )
         return Message(
             code=200,
-            data=obj,
             message=f'<{self.name}> create successfully'
         )
 
