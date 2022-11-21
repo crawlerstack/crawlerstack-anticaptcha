@@ -24,7 +24,7 @@
 
 - 数字字母混合
     - [中国知网登录页面](http://my.cnki.net/elibregister/commonRegister.aspx)
-  
+
 - 滑块验证码
     - [海关数据网站](http://43.248.49.97/);
     - [https://dun.163.com/trial/jigsaw](https://dun.163.com/trial/jigsaw)
@@ -216,9 +216,9 @@
 
 - storage
 
-| id  | uri             | name  | default | update_time | create_time |
-|-----|-----------------|-------|---------|-------------|-------------|
-| 1   | localfile: //... | local | true    | 2022...     | 2022...     |
+| id  | uri         | name  | default | update_time | create_time |
+|-----|-------------|-------|---------|-------------|-------------|
+| 1   | file: //... | local | true    | 2022...     | 2022...     |
 
 ## 注意：
 
@@ -291,7 +291,7 @@ op.bulk_insert(
     [
         {
             'name': 'local',
-            'uri': f'localfile://{settings.CAPTCHA_IMAGE_PATH}',
+            'uri': f'file://{settings.CAPTCHA_IMAGE_PATH}',
             'default': True,
             'update_time': '2022-11-11 16:54:34',
             'create_time': '2022-11-11 16:54:34'

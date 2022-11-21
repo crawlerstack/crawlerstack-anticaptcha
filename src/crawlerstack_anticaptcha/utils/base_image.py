@@ -30,15 +30,20 @@ class BasePreprocessing:
         self.fore_image_path = fore_image_path
         self.logger = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
 
+    @staticmethod
+    def image(image_path: Path, gray: bool):
+        """image"""
+        if gray:
+            return cv2.imread(str(image_path), 0)
+        return cv2.imread(str(image_path.resolve()))
+
     def fore_image(self, gray: bool = True) -> ndarray:
         """
         读取前景图
         :param gray:
         :return:
         """
-        if gray:
-            return cv2.imread(str(self.fore_image_path.resolve()), 0)
-        return cv2.imread(str(self.fore_image_path.resolve()))
+        return self.image(self.bg_image_path, gray)
 
     def bg_image(self, gray: bool = True):
         """
@@ -46,6 +51,4 @@ class BasePreprocessing:
         :param gray:
         :return:
         """
-        if gray:
-            return cv2.imread(str(self.bg_image_path.resolve()), 0)
-        return cv2.imread(str(self.bg_image_path.resolve()))
+        return self.image(self.fore_image_path, gray)
