@@ -6,7 +6,7 @@ from crawlerstack_anticaptcha.api.rest_api import app
 from crawlerstack_anticaptcha.utils.exception import (CaptchaParseFailed,
                                                       ObjectDoesNotExist,
                                                       UnsupportedMediaType)
-from crawlerstack_anticaptcha.utils.schema import Message
+from crawlerstack_anticaptcha.utils.message import Message
 
 
 @app.exception_handler(ObjectDoesNotExist)

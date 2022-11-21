@@ -1,11 +1,11 @@
 """StorageRepository"""
-
+from fastapi_sa.database import db
 from sqlalchemy.future import select
 
-from crawlerstack_anticaptcha.db import async_session
 from crawlerstack_anticaptcha.models import StorageModel
 from crawlerstack_anticaptcha.repositories.base import BaseRepository
 from crawlerstack_anticaptcha.utils.exception import ObjectDoesNotExist
+from crawlerstack_anticaptcha.utils.schema import StorageSchema
 
 
 class StorageRepository(BaseRepository):
@@ -18,45 +18,33 @@ class StorageRepository(BaseRepository):
         """model"""
         return StorageModel
 
-    async def update_by_id(self, storage_id: int, default: bool):
-        """
-        update_by_id
-        :param storage_id:
-        :param default:
-        :return:
-        """
-        stmt = select(self.model).where(self.model.id == storage_id)
-        async with async_session() as session:
-            async with session.begin():
-                obj = await session.scalar(stmt)
-                if obj is None:
-                    raise ObjectDoesNotExist(f'Can not find object by id="{storage_id}".')
-                obj.default = default
-                self.logger.info('Update %s', obj)
+    @property
+    def schema(self):
+        """schema"""
+        return StorageSchema
 
     async def init_default(self):
         """init default"""
         stmt = select(self.model).where(bool(self.model.default) is True)
-        async with async_session() as session:
-            async with session.begin():
-                result = await session.scalars(stmt)
-                for i in result.all():
-                    i.default = False
+        async with db():
+            result = await db.session.scalars(stmt)
+            for i in result.all():
+                i.default = False
+                await db.session.flush()
 
     async def get_by_name(self, storage_name: str):
         """get_by_name"""
         stmt = select(self.model).where(self.model.name == storage_name)
-        async with async_session() as session:
-            res = await session.scalar(stmt)
-            return res
+        res = await db.session.scalar(stmt)
+        return self.schema.from_orm(res)
 
     async def update_by_name(self, name: str):
         """update_by_name"""
         stmt = select(self.model).where(self.model.name == name)
-        async with async_session() as session:
-            async with session.begin():
-                obj = await session.scalar(stmt)
-                if obj is None:
-                    raise ObjectDoesNotExist(f'Can not find object by id="{name}".')
-                obj.default = True
-                self.logger.info('Update %s', obj)
+        async with db():
+            obj = await db.session.scalar(stmt)
+            if obj is None:
+                raise ObjectDoesNotExist(f'Can not find object by id="{name}".')
+            obj.default = True
+            await db.session.flush()
+            self.logger.info('Update %s', obj)

@@ -1,10 +1,15 @@
 """api service"""
 import uvicorn
 from fastapi import FastAPI
+from fastapi_sa.database import db
+from fastapi_sa.middleware import DBSessionMiddleware
 
+from ..config import settings
 from .captcha_api import router
 
 app = FastAPI()
+db.init(url=settings.DATABASE_URL)
+app.add_middleware(DBSessionMiddleware)
 app.include_router(router, prefix='/api/v1/captcha')
 
 

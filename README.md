@@ -27,3 +27,17 @@ docker compose up
 ```bash
 alembic upgrade head
 ```
+
+## 接口介绍
+
+| 操作       | Action | api                                      | 说明                  |
+|----------|:------:|:-----------------------------------------|:--------------------|
+| 查询验证码分类  |  GET   | /v1/api/captcha/categories               | 所有分类查询              |
+| 添加验证码分类  |  POST  | /v1/api/captcha/categories               | 新增验证码分类             |
+| 修改验证码分类  | PATCH  | /v1/api/captcha/categories/{category_id} | 基于id修改验证码分类         |
+| 识别接口     |  POST  | /v1/api/captcha/identify/                | 根据请求参数，识别对应验证码，返回结果 |
+| 回调接口     | PATCH  | /v1/api/captcha/record/{record_id}       | 将识别结果成功的事件状态改为成功    |
+| 查询存储配置   |  GET   | /v1/api/captcha/storages                 | 所有存储分类查询            |
+| 添加存储配置   |  POST  | /v1/api/captcha/storages                 | 新增存储配置              |
+| 获取存储配置详情 |  GET   | /v1/api/captcha/storages/{id}            | 查询指定id的详情           |
+| 修改存储配置   | PATCH  | /v1/api/captcha/storages/{id}            | 基于id修改              |

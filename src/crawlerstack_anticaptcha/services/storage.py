@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from crawlerstack_anticaptcha.repositories.storage import StorageRepository
-from crawlerstack_anticaptcha.utils.schema import Message
+from crawlerstack_anticaptcha.utils.message import Message
 
 
 class StorageService:
@@ -18,20 +18,19 @@ class StorageService:
 
     async def create(self):
         """create storage"""
-        obj = await self.storage_repository.create(
+        await self.storage_repository.create(
             uri=self.uri,
             name=self.name,
             default=self.default,
         )
         return Message(
             code=200,
-            data=obj,
             message=f'<{self.name}> create successfully'
         )
 
     async def update(self):
         """update storage config"""
-        await self.storage_repository.update_by_id(self.storage_id, self.default)
+        await self.storage_repository.update_by_id(self.storage_id, default=self.default)
         return Message(
             code=200,
             message='ok'

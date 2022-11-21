@@ -11,7 +11,7 @@ from crawlerstack_anticaptcha.storages import LocalStorages
 async def test_save(mock_path, mocker):
     """test save"""
     write_to_file = mocker.patch.object(LocalStorages, 'write_to_file')
-    local = LocalStorages(StorageModel(uri=str(mock_path)))
+    local = LocalStorages(StorageModel(uri=f'file://{mock_path}'))
     result = await local.save('foo', 'png', b'1')
     assert result == mock_path / 'foo.png'
     write_to_file.assert_called_with(mock_path / 'foo.png', b'1')
@@ -20,7 +20,7 @@ async def test_save(mock_path, mocker):
 @pytest.mark.asyncio
 async def test_save_not_found(mock_path):
     """test_save_not_found"""
-    local = LocalStorages(StorageModel(uri=str(mock_path / 'test')))
+    local = LocalStorages(StorageModel(uri=f'file://{mock_path}/test'))
     result = await local.save('foo', 'png', b'1')
     assert result == mock_path / 'test/foo.png'
 

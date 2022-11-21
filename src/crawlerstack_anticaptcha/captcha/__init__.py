@@ -9,7 +9,10 @@ from crawlerstack_anticaptcha.utils import SingletonMeta
 
 class CaptchaParser(metaclass=SingletonMeta):
     """Captcha"""
-    captcha_funcs = {'NumericalCaptcha': NumericalCaptcha}
+    captcha_funcs = {
+        'NumericalCaptcha': NumericalCaptcha,
+        'SliderCaptcha': SliderCaptcha
+    }
 
     def __init__(self, category: str):
         self.category = category

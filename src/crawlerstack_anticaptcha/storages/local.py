@@ -1,12 +1,23 @@
 """LocalStorages"""
 import asyncio
 import os
+from pathlib import Path
 
 from crawlerstack_anticaptcha.storages.base import BaseStorage
 
 
 class LocalStorages(BaseStorage):
     """LocalStorages"""
+
+    def file(self, name: str, file_type: str):
+        """
+        file
+        :param name:
+        :param file_type:
+        :return:
+        """
+        local_save_path = self.storage.uri.split('file://')[1]
+        return Path(local_save_path) / f'{name}.{file_type}'
 
     async def save(self, name: str, file_type: str, data: bytes):
         """save"""

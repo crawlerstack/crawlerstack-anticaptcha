@@ -4,10 +4,10 @@ from datetime import datetime
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_base
 
-BaseModel = declarative_base()
+Base = declarative_base()
 
 
-class CaptchaCategoryModel(BaseModel):
+class CaptchaCategoryModel(Base):
     """
     验证码类型表
 
@@ -21,11 +21,10 @@ class CaptchaCategoryModel(BaseModel):
     create_time = Column(DateTime, default=datetime.now, comment='Create time')
 
     def __repr__(self):
-        return f'<CaptchaCategory(category_type="{self.name}",' \
-               f'create_time="{self.create_time}",update_time="{self.update_time}")>'
+        return f'<CaptchaCategory(name="{self.name}",id="{self.id}")>'
 
 
-class StorageModel(BaseModel):
+class StorageModel(Base):
     """
     文件存储表
 
@@ -39,8 +38,11 @@ class StorageModel(BaseModel):
     update_time = Column(DateTime, onupdate=datetime.now, default=datetime.now, comment='Update time.')
     create_time = Column(DateTime, default=datetime.now, comment='Create time.')
 
+    def __repr__(self):
+        return f'<StorageModel(name="{self.name}",uri="{self.uri}",default="{self.default}")>'
 
-class CaptchaRecordModel(BaseModel):
+
+class CaptchaRecordModel(Base):
     """
     验证码记录表
 
@@ -56,8 +58,11 @@ class CaptchaRecordModel(BaseModel):
     update_time = Column(DateTime, onupdate=datetime.now, default=datetime.now, comment='Update time.')
     create_time = Column(DateTime, default=datetime.now, comment='Create time.')
 
+    def __repr__(self):
+        return f'<CaptchaRecordModel(id="{self.id}",result="{self.result}",success={self.success})>'
 
-class CaptchaFileModel(BaseModel):
+
+class CaptchaFileModel(Base):
     """
     验证码图像文件表
 
@@ -72,3 +77,7 @@ class CaptchaFileModel(BaseModel):
     file_mark = Column(String(255), default=None, comment='Image mark.(foreground or background image)')
     update_time = Column(DateTime, onupdate=datetime.now, default=datetime.now, comment='Update time.')
     create_time = Column(DateTime, default=datetime.now, comment='Create time.')
+
+    def __repr__(self):
+        return f'<CaptchaFileModel(record_id="{self.record_id}",' \
+               f'file_type="{self.file_type}",filename="{self.filename}")>'
